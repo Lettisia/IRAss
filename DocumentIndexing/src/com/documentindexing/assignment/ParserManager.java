@@ -45,6 +45,7 @@ public class ParserManager {
 	private void loadAllValues(String document){
 		Article article =null;
 		int articleCount =0;
+
 		String docNo = null;
 		String headline = null;
 		String text = null;
@@ -53,12 +54,10 @@ public class ParserManager {
 
 		while (matcher.find()) {
 			articleCount++;
-
 			tagMatcher = DOCNO_TAG_REGEX.matcher(matcher.group(1));
 			if(tagMatcher.find()){
 				docNo = tagMatcher.group(1);
 			}
-
 			tagMatcher = HEADLINE_TAG_REGEX.matcher(matcher.group(1));
 			if(tagMatcher.find()){
 				headline = FILTER_REGEX.matcher(tagMatcher.group(1)).replaceAll("");
