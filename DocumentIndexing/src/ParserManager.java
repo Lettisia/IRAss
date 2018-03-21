@@ -1,5 +1,3 @@
-package com.documentindexing.assignment;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -24,13 +22,13 @@ public class ParserManager {
 	private Map<Integer, String> hmDoc = new HashMap<>();
 	private List<Article> articles = new ArrayList<>();
 
-	public ParserManager(String source) throws IOException{
-		loadAllValues(readingFile(source));
+	public ParserManager(String source, boolean printTerms, boolean removeStopwords, String stopFile) throws IOException{
+		loadAllValues(readFile(source));
 		printList();
 		printMap();
 	}
 
-	private String readingFile(String source) throws IOException{
+	private String readFile(String source) throws IOException{
 		String document = "";
 		BufferedReader inputFile = new BufferedReader(new InputStreamReader(new FileInputStream( new File(source))));
 		String aLine = null;
@@ -105,5 +103,7 @@ public class ParserManager {
 			System.out.println(entry.getKey()+":"+entry.getValue());
 		}
 	}
+
+
 
 }

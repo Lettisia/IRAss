@@ -8,7 +8,7 @@ public class StopwordRemover {
         parseStopwordList(filename);
     }
 
-    private ArrayList<Document> parseStopwordList(String filename) {
+    private ArrayList<Article> parseStopwordList(String filename) {
         try {
             Scanner input = new Scanner(filename);
 
@@ -17,9 +17,10 @@ public class StopwordRemover {
             }
 
             input.close();
-        } catch (IOException exception) {
+        } catch (Exception exception) {
             exception.printStackTrace();
         }
+        return null;
     }
 
 
