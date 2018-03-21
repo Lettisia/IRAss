@@ -30,5 +30,4 @@ public class Article {
 	public int getDocumentIndex() {
 		return documentIndex;
 	}
-
 }
