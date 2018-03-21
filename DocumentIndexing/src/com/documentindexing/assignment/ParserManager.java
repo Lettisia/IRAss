@@ -94,6 +94,12 @@ public class ParserManager {
 		}
 	}
 
+	private void printList(){
+		for(Article article : articles){
+			System.out.println(article.toString());
+		}
+	}
+
 	private void printMap(){
 		for(Entry<Integer, String> entry : hmDoc.entrySet()){
 			System.out.println(entry.getKey()+":"+entry.getValue());
