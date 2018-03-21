@@ -7,7 +7,7 @@ public class Index {
         String stopFile = null;
         String articleFile = null;
         boolean removeStopWords = false;
-        boolean printTerms = false;
+        boolean printTerms = true;
 
         if (args.length > 0) {
             for (int i = 0; i < args.length; i++) {
@@ -25,7 +25,7 @@ public class Index {
 
         try {
             if (articleFile == null) {
-                File file = new File("latimes");
+                File file = new File("DocumentIndexing/src/resources/latimes-100");
                 articleFile = file.getAbsolutePath();
             }
             new ParserManager(articleFile, printTerms, removeStopWords, stopFile);
