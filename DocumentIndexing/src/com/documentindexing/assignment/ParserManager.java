@@ -45,7 +45,6 @@ public class ParserManager {
 	private void loadAllValues(String document){
 		Article article =null;
 		int articleCount =0;
-
 		String docNo = null;
 		String headline = null;
 		String text = null;
@@ -53,6 +52,7 @@ public class ParserManager {
 
 		while (matcher.find()) {
 			articleCount++;
+
 			docNo = findMatch(matcher.group(1),  "DOCNO");
 			headline = findMatch(matcher.group(1),  "HEADLINE");
 			text = findMatch(matcher.group(1),  "TEXT");
