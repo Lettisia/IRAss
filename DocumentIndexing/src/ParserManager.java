@@ -85,13 +85,7 @@ public class ParserManager {
 		}
 		return null;	
 	}
-
-	private void printList(){
-		for(Article article : articles){
-			System.out.println(article.toString());
-		}
-	}
-
+	
 	private void printList(){
 		for(Article article : articles){
 			System.out.println(article.toString());

@@ -25,8 +25,8 @@ public class Index {
 
         try {
             if (articleFile == null) {
-                File dir = new File("src/resources");
-                articleFile = dir.getCanonicalPath() + File.separator + "latimes";
+                File file = new File("latimes");
+                articleFile = file.getAbsolutePath();
             }
             new ParserManager(articleFile, printTerms, removeStopWords, stopFile);
         } catch (IOException e) {
