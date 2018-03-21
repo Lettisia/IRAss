@@ -1,5 +1,3 @@
-package com.documentindexing.assignment;
-
 public class Article {
 	private String docNo;
 	private String text;
