@@ -47,26 +47,48 @@ public class ParserManager {
 		String docNo = null;
 		String headline = null;
 		String text = null;
-		Matcher tagMatcher = null;
 		Matcher matcher = DOC_TAG_REGEX.matcher(document);
 
 		while (matcher.find()) {
 			articleCount++;
-			tagMatcher = DOCNO_TAG_REGEX.matcher(matcher.group(1));
-			if(tagMatcher.find()){
-				docNo = tagMatcher.group(1);
-			}
-			tagMatcher = HEADLINE_TAG_REGEX.matcher(matcher.group(1));
-			if(tagMatcher.find()){
-				headline = FILTER_REGEX.matcher(tagMatcher.group(1)).replaceAll("");
-			}
-			tagMatcher = TEXT_TAG_REGEX.matcher(matcher.group(1));
-			if(tagMatcher.find()){
-				text = FILTER_REGEX.matcher(tagMatcher.group(1)).replaceAll("");
-			}
-			article = new Article(docNo, headline, text);
+			docNo = findMatch(matcher.group(1),  "DOCNO");
+			headline = findMatch(matcher.group(1),  "HEADLINE");
+			text = findMatch(matcher.group(1),  "TEXT");
+			article = new Article(articleCount, docNo, headline, text);
 			hmDoc.put(articleCount, docNo);
 			articles.add(article);
+		}
+	}
+
+	private String findMatch(String str, String tag){
+		Matcher matcher = null;
+		switch(tag){
+		case "DOCNO":
+			matcher = DOCNO_TAG_REGEX.matcher(str);
+			break;
+		case "HEADLINE":
+			matcher = HEADLINE_TAG_REGEX.matcher(str);
+			break;
+		case "TEXT":
+			matcher = TEXT_TAG_REGEX.matcher(str);
+			break;
+		default:
+			break;
+			//throw new IllegalArgumentException
+		}
+
+		if(matcher.find()){
+			if(tag.equalsIgnoreCase("HEADLINE") || tag.equalsIgnoreCase("TEXT"))
+				return FILTER_REGEX.matcher(matcher.group(1)).replaceAll("");
+			else
+				return matcher.group(1);
+		}
+		return null;	
+	}
+
+	private void printList(){
+		for(Article article : articles){
+			System.out.println(article.toString());
 		}
 	}
 

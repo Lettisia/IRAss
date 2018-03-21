@@ -1,9 +1,11 @@
 public class Article {
+	private int documentIndex;
 	private String docNo;
 	private String text;
 	private String headline;
 	
-	public Article(String docNo, String headline, String text){
+	public Article(int documentIndex, String docNo, String headline, String text){
+		this.documentIndex = documentIndex;
 		this.docNo = docNo;
 		this.text = text;
 		this.headline = headline;	
@@ -23,6 +25,10 @@ public class Article {
 	
 	public String toString(){ 
 		return "DocNo:" + getDocNo() + "\nHeadline:" + getHeadline() + "\nText:" + getText();
+	}
+
+	public int getDocumentIndex() {
+		return documentIndex;
 	}
 
 }
