@@ -4,9 +4,9 @@ import java.io.IOException;
 public class Index {
 
     public static void main(String[] args) {
-        String stopFile = null;
+        String stopFile = "DocumentIndexing/src/resources/stoplist";
         String articleFile = null;
-        boolean removeStopWords = false;
+        boolean removeStopWords = true;
         boolean printTerms = true;
 
         if (args.length > 0) {
@@ -28,7 +28,10 @@ public class Index {
                 File file = new File("DocumentIndexing/src/resources/latimes-100");
                 articleFile = file.getAbsolutePath();
             }
-            new InvertedIndexGenerator(articleFile, printTerms, stopFile);
+            if (removeStopWords)
+                new InvertedIndexGenerator(articleFile, printTerms, stopFile);
+            else
+                new InvertedIndexGenerator(articleFile, printTerms);
         } catch (IOException e) {
             e.printStackTrace();
         }

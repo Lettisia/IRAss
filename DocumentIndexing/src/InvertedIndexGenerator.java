@@ -22,12 +22,12 @@ public class InvertedIndexGenerator {
     public InvertedIndexGenerator(String source, boolean printTerms, String stopFile) throws IOException {
         try {
             scanner = new Scanner(new FileInputStream(source));
-            String document = readOneDocFromFile();
+            String document = readOneDocFromFile().toLowerCase();
             Article article = loadOneArticle(document);
             stopwordRemover = new StopwordRemover(stopFile);
             article.parse(stopwordRemover);
-
-
+            System.out.println("Terms: " + article.getTerms().size());
+            System.out.println(article.getTerms());
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } finally {
@@ -38,13 +38,10 @@ public class InvertedIndexGenerator {
     public InvertedIndexGenerator(String source, boolean printTerms) {
         try {
             scanner = new Scanner(new FileInputStream(source));
-            String document = readOneDocFromFile();
-            Article article = loadOneArticle(document);
-            article.toLowerCase();
-            article.tokenise();
-
-
-
+            String document = readOneDocFromFile().toLowerCase();
+            loadAllValues(document);
+            articles.get(0).parse();
+            printList();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } finally {
@@ -56,7 +53,7 @@ public class InvertedIndexGenerator {
         String document = "";
         String aLine = "";
         while (scanner.hasNext() && !aLine.contains(DOC_END_TAG)) {
-            aLine = scanner.next();
+            aLine = scanner.nextLine();
             document += aLine;
         }
         return document;
@@ -77,17 +74,19 @@ public class InvertedIndexGenerator {
 
     private Article loadOneArticle(String document) {
         Article article = null;
+        int articleCount = 0;
         String docNo = null;
         String headline = null;
         String text = null;
         Matcher matcher = DOC_TAG_REGEX.matcher(document);
 
-        docNo = findMatch(matcher.group(1), "DOCNO");
-        headline = findMatch(matcher.group(1), "HEADLINE");
-        text = findMatch(matcher.group(1), "TEXT");
-        article = new Article(articleCount, docNo, headline, text);
-        DocumentIDMap.put(articleCount, docNo);
-
+        while (matcher.find()) {
+            docNo = findMatch(matcher.group(1), "DOCNO");
+            headline = findMatch(matcher.group(1), "HEADLINE");
+            text = findMatch(matcher.group(1), "TEXT");
+            article = new Article(articleCount, docNo, headline, text);
+            DocumentIDMap.put(articleCount, docNo);
+        }
         return article;
     }
 
@@ -139,7 +138,7 @@ public class InvertedIndexGenerator {
 
     private void printList() {
         for (Article article : articles) {
-            System.out.println(article.toString());
+            System.out.println(article.getTerms());
         }
     }
 

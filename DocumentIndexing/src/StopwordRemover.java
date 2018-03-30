@@ -22,7 +22,7 @@ public class StopwordRemover {
 
             input.close();
         } catch (Exception exception) {
-            System.err.println("Bad File " + filename);
+            System.err.println("Bad Stopword File " + filename);
             exception.printStackTrace();
         }
     }

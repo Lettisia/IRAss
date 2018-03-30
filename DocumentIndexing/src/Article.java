@@ -13,9 +13,20 @@ public class Article {
         this.text = headline + text;
     }
 
+    public void parse(StopwordRemover stopwordRemover) {
+        toLowerCase();
+        tokenise();
+        removeStopwords(stopwordRemover);
+    }
+
+    public void parse() {
+        toLowerCase();
+        tokenise();
+    }
+
     public void tokenise() {
-        String[] headlineStrings = text.split(" ");
-        terms = new ArrayList<>(Arrays.asList(headlineStrings));
+        String[] splitText = text.split(" ");
+        terms = new ArrayList<>(Arrays.asList(splitText));
     }
 
     public void toLowerCase() {
@@ -50,9 +61,5 @@ public class Article {
         this.terms = terms;
     }
 
-    public void parse(StopwordRemover stopwordRemover) {
-        toLowerCase();
-        tokenise();
-        removeStopwords(stopwordRemover);
-    }
+
 }
