@@ -27,7 +27,7 @@ public class StopwordRemover {
         }
     }
 
-    public ArrayList<String> removeStopwords(ArrayList<String> tokens) {
+    ArrayList<String> removeStopwords(ArrayList<String> tokens) {
         ArrayList<String> result = new ArrayList<>();
         for (String word : tokens) {
             if (!stopwords.containsKey(word)) {
@@ -38,7 +38,7 @@ public class StopwordRemover {
     }
 
     // Test
-    public static void main(String [] args) {
+    public static void main(String[] args) {
         String sentence = "Your program must be called index and should accept an optional command line argument";
         ArrayList<String> document = new ArrayList<>(Arrays.asList(sentence.split(" ")));
         StopwordRemover remover = new StopwordRemover("DocumentIndexing/src/resources/stoplist");

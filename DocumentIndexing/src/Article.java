@@ -1,43 +1,52 @@
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 
 public class Article {
     private int documentIndex;
     private String docNo;
     private String text;
     private ArrayList<String> terms = new ArrayList<>();
+    private static int articleCount = 0;
 
-    public Article(int documentIndex, String docNo, String headline, String text) {
-        this.documentIndex = documentIndex;
+    Article(String docNo, String headline, String text) {
+        this.documentIndex = articleCount++;
         this.docNo = docNo;
-        this.text = headline + text;
+        this.text = headline + " " + text;
     }
 
-    public void parse(StopwordRemover stopwordRemover) {
+    void parse(StopwordRemover stopwordRemover) {
         toLowerCase();
         tokenise();
         removeStopwords(stopwordRemover);
     }
 
-    public void parse() {
-        toLowerCase();
-        tokenise();
+    HashMap<String, Integer> countTerms() {
+        HashMap<String, Integer> termFrequencyList = new HashMap<>();
+        for (String term : terms) {
+            if (termFrequencyList.containsKey(term)) {
+                termFrequencyList.put(term, termFrequencyList.get((term)) + 1);
+            } else {
+                termFrequencyList.put(term, 1);
+            }
+        }
+        return termFrequencyList;
     }
 
-    public void tokenise() {
-        String[] splitText = text.split(" ");
+    private void tokenise() {
+        String[] splitText = text.split("\\s+");
         terms = new ArrayList<>(Arrays.asList(splitText));
     }
 
-    public void toLowerCase() {
+    private void toLowerCase() {
         text = text.toLowerCase();
     }
 
-    public void removeStopwords(StopwordRemover stopwordRemover) {
+    private void removeStopwords(StopwordRemover stopwordRemover) {
         terms = stopwordRemover.removeStopwords(terms);
     }
 
-    public String getDocNo() {
+    private String getDocNo() {
         return docNo;
     }
 
@@ -49,7 +58,7 @@ public class Article {
         return "DocNo:" + getDocNo() + "\nText:" + getText();
     }
 
-    public int getDocumentIndex() {
+    int getDocumentIndex() {
         return documentIndex;
     }
 

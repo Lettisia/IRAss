@@ -1,6 +1,8 @@
 import java.io.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map.Entry;
+import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -13,39 +15,71 @@ public class InvertedIndexGenerator {
     private static final Pattern FILTER_REGEX = Pattern.compile("<p>|</p>|[\\p{Punct}]");
     private static final String DOC_END_TAG = "</DOC>";
 
-    private Map<Integer, String> DocumentIDMap = new HashMap<>();
-    private List<Article> articles = new ArrayList<>();
-    private int articleCount = 0;
     private Scanner scanner = null;
+    private HashMap<String, IndexEntry> lexicon = new HashMap<>();
+    private HashMap<Integer, String> DocumentIDMap = new HashMap<>();
+    private boolean printTerms = false;
     private StopwordRemover stopwordRemover = null;
 
+
     public InvertedIndexGenerator(String source, boolean printTerms, String stopFile) throws IOException {
-        try {
-            scanner = new Scanner(new FileInputStream(source));
-            String document = readOneDocFromFile().toLowerCase();
-            Article article = loadOneArticle(document);
+        scanner = new Scanner(new FileInputStream(source));
+        this.printTerms = printTerms;
+        if (stopFile != null) {
             stopwordRemover = new StopwordRemover(stopFile);
-            article.parse(stopwordRemover);
-            System.out.println("Terms: " + article.getTerms().size());
-            System.out.println(article.getTerms());
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } finally {
-            scanner.close();
         }
     }
 
-    public InvertedIndexGenerator(String source, boolean printTerms) {
-        try {
-            scanner = new Scanner(new FileInputStream(source));
+
+    public InvertedIndexGenerator(String source, boolean printTerms) throws IOException {
+        this(source, printTerms, null);
+    }
+
+
+    public void createInvertedIndex() {
+        while (scanner.hasNext()) {
             String document = readOneDocFromFile().toLowerCase();
-            loadAllValues(document);
-            articles.get(0).parse();
-            printList();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } finally {
-            scanner.close();
+            Article article = loadOneArticle(document);
+
+            if (stopwordRemover != null)
+                article.parse(stopwordRemover);
+
+            printTerms(article);
+            addToLexicon(article);
+        }
+        if (printTerms) {
+            for (String term : lexicon.keySet()) {
+                System.out.println(lexicon.get(term));
+            }
+            System.out.println(lexicon.size());
+        }
+    }
+
+
+    private void addToLexicon(Article article) {
+        HashMap<String, Integer> countedTerms = article.countTerms();
+        for (String term : countedTerms.keySet()) {
+            IndexEntry entry;
+
+            if (lexicon.containsKey(term)) {
+                entry = lexicon.get(term);
+                entry.documentFrequency++;
+            } else {
+                entry = new IndexEntry();
+                entry.term = term;
+                entry.documentFrequency = 1;
+            }
+
+            Pair indexPair = new Pair(article.getDocumentIndex(), countedTerms.get(term));
+            entry.invertedList.add(indexPair);
+            lexicon.put(term, entry);
+        }
+    }
+
+    private void printTerms(Article article) {
+        if (printTerms) {
+            System.out.println("Terms: " + article.getTerms().size());
+            System.out.println(article.getTerms());
         }
     }
 
@@ -60,55 +94,24 @@ public class InvertedIndexGenerator {
     }
 
 
-    private String readFile(String source) throws IOException {
-        String document = "";
-        BufferedReader inputFile = new BufferedReader(new InputStreamReader(new FileInputStream(new File(source))));
-        String aLine;
-        while ((aLine = inputFile.readLine()) != null) {
-            document += aLine;
-        }
-        inputFile.close();
-
-        return document.toLowerCase();
-    }
-
     private Article loadOneArticle(String document) {
         Article article = null;
         int articleCount = 0;
-        String docNo = null;
-        String headline = null;
-        String text = null;
+        String docNo;
+        String headline;
+        String text;
         Matcher matcher = DOC_TAG_REGEX.matcher(document);
 
         while (matcher.find()) {
             docNo = findMatch(matcher.group(1), "DOCNO");
             headline = findMatch(matcher.group(1), "HEADLINE");
             text = findMatch(matcher.group(1), "TEXT");
-            article = new Article(articleCount, docNo, headline, text);
+            article = new Article(docNo, headline, text);
             DocumentIDMap.put(articleCount, docNo);
         }
         return article;
     }
 
-    private void loadAllValues(String document) {
-        Article article = null;
-        int articleCount = 0;
-        String docNo = null;
-        String headline = null;
-        String text = null;
-        Matcher matcher = DOC_TAG_REGEX.matcher(document);
-
-        while (matcher.find()) {
-            articleCount++;
-
-            docNo = findMatch(matcher.group(1), "DOCNO");
-            headline = findMatch(matcher.group(1), "HEADLINE");
-            text = findMatch(matcher.group(1), "TEXT");
-            article = new Article(articleCount, docNo, headline, text);
-            DocumentIDMap.put(articleCount, docNo);
-            articles.add(article);
-        }
-    }
 
     private String findMatch(String str, String tag) {
         Matcher matcher = null;
@@ -124,11 +127,10 @@ public class InvertedIndexGenerator {
                 break;
             default:
                 break;
-            //throw new IllegalArgumentException
         }
 
-        if (matcher.find()) {
-            if (tag.equalsIgnoreCase("HEADLINE") || tag.equalsIgnoreCase("TEXT"))
+        if (matcher != null && matcher.find()) {
+            if (isTextField(tag))
                 return FILTER_REGEX.matcher(matcher.group(1)).replaceAll("");
             else
                 return matcher.group(1);
@@ -136,11 +138,10 @@ public class InvertedIndexGenerator {
         return null;
     }
 
-    private void printList() {
-        for (Article article : articles) {
-            System.out.println(article.getTerms());
-        }
+    private boolean isTextField(String tag) {
+        return tag.equalsIgnoreCase("HEADLINE") || tag.equalsIgnoreCase("TEXT");
     }
+
 
     private void printMap() {
         for (Entry<Integer, String> entry : DocumentIDMap.entrySet()) {
@@ -148,4 +149,39 @@ public class InvertedIndexGenerator {
         }
     }
 
+}
+
+class IndexEntry {
+    String term;
+    int documentFrequency;
+    int byteOffset;
+    ArrayList<Pair> invertedList = new ArrayList<>();
+
+    @Override
+    public String toString() {
+        return "IndexEntry{" +
+                "term='" + term + '\'' +
+                ", documentFrequency=" + documentFrequency +
+                ", byteOffset=" + byteOffset +
+                ", invertedList=" + invertedList +
+                "}";
+    }
+}
+
+class Pair {
+    int docID;
+    int termFrequency;
+
+    public Pair(int docID, int termFrequency) {
+        this.docID = docID;
+        this.termFrequency = termFrequency;
+    }
+
+    @Override
+    public String toString() {
+        return "Pair{" +
+                "docID=" + docID +
+                ", termFrequency=" + termFrequency +
+                '}';
+    }
 }
