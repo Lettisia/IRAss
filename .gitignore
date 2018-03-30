@@ -1,2 +1,15 @@
 /.metadata/
 /RemoteSystemsTempFiles/
+DocumentIndexing/src/resources/stoplist
+DocumentIndexing/src/resources/latimes-100
+DocumentIndexing/src/resources/latimes
+DocumentIndexing/class/production/IRAss/resources/stoplist
+DocumentIndexing/class/production/IRAss/resources/latimes-100
+DocumentIndexing/class/production/IRAss/resources/latimes
+DocumentIndexing/class/production/IRAss/latimes
+.idea/workspace.xml
+.idea/vcs.xml
+.idea/uiDesigner.xml
+.idea/modules.xml
+.idea/misc.xml
+.idea/IRAss.iml

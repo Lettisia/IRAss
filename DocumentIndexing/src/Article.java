@@ -1,24 +1,52 @@
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 
 public class Article {
     private int documentIndex;
     private String docNo;
     private String text;
     private ArrayList<String> terms = new ArrayList<>();
+    private static int articleCount = 0;
 
-    public Article(int documentIndex, String docNo, String headline, String text) {
-        this.documentIndex = documentIndex;
+    Article(String docNo, String headline, String text) {
+        this.documentIndex = articleCount++;
         this.docNo = docNo;
-        this.text = headline + text;
+        this.text = headline + " " + text;
     }
 
-    public void tokenise() {
-        String[] headlineStrings = text.split(" ");
-        terms = new ArrayList<>(Arrays.asList(headlineStrings));
+    void parse(StopwordRemover stopwordRemover) {
+        toLowerCase();
+        tokenise();
+        removeStopwords(stopwordRemover);
     }
 
-    public String getDocNo() {
+    HashMap<String, Integer> countTerms() {
+        HashMap<String, Integer> termFrequencyList = new HashMap<>();
+        for (String term : terms) {
+            if (termFrequencyList.containsKey(term)) {
+                termFrequencyList.put(term, termFrequencyList.get((term)) + 1);
+            } else {
+                termFrequencyList.put(term, 1);
+            }
+        }
+        return termFrequencyList;
+    }
+
+    private void tokenise() {
+        String[] splitText = text.split("\\s+");
+        terms = new ArrayList<>(Arrays.asList(splitText));
+    }
+
+    private void toLowerCase() {
+        text = text.toLowerCase();
+    }
+
+    private void removeStopwords(StopwordRemover stopwordRemover) {
+        terms = stopwordRemover.removeStopwords(terms);
+    }
+
+    private String getDocNo() {
         return docNo;
     }
 
@@ -30,7 +58,7 @@ public class Article {
         return "DocNo:" + getDocNo() + "\nText:" + getText();
     }
 
-    public int getDocumentIndex() {
+    int getDocumentIndex() {
         return documentIndex;
     }
 
@@ -41,4 +69,6 @@ public class Article {
     public void setTerms(ArrayList<String> terms) {
         this.terms = terms;
     }
+
+
 }
