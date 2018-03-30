@@ -28,7 +28,7 @@ public class Index {
                 File file = new File("DocumentIndexing/src/resources/latimes-100");
                 articleFile = file.getAbsolutePath();
             }
-            new ParserManager(articleFile, printTerms, removeStopWords, stopFile);
+            new InvertedIndexGenerator(articleFile, printTerms, stopFile);
         } catch (IOException e) {
             e.printStackTrace();
         }

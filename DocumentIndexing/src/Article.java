@@ -18,6 +18,14 @@ public class Article {
         terms = new ArrayList<>(Arrays.asList(headlineStrings));
     }
 
+    public void toLowerCase() {
+        text = text.toLowerCase();
+    }
+
+    public void removeStopwords(StopwordRemover stopwordRemover) {
+        terms = stopwordRemover.removeStopwords(terms);
+    }
+
     public String getDocNo() {
         return docNo;
     }
@@ -40,5 +48,11 @@ public class Article {
 
     public void setTerms(ArrayList<String> terms) {
         this.terms = terms;
+    }
+
+    public void parse(StopwordRemover stopwordRemover) {
+        toLowerCase();
+        tokenise();
+        removeStopwords(stopwordRemover);
     }
 }
