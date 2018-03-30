@@ -1,5 +1,4 @@
 import java.io.*;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.Scanner;
@@ -40,10 +39,7 @@ public class InvertedIndexGenerator {
         while (scanner.hasNext()) {
             String document = readOneDocFromFile().toLowerCase();
             Article article = loadOneArticle(document);
-
-            if (stopwordRemover != null)
-                article.parse(stopwordRemover);
-
+            article.parse(stopwordRemover);
             printTerms(article);
             addToLexicon(article);
         }
@@ -70,8 +66,8 @@ public class InvertedIndexGenerator {
                 entry.documentFrequency = 1;
             }
 
-            Pair indexPair = new Pair(article.getDocumentIndex(), countedTerms.get(term));
-            entry.invertedList.add(indexPair);
+            TermFrequencyPair indexTermFrequencyPair = new TermFrequencyPair(article.getDocumentIndex(), countedTerms.get(term));
+            entry.invertedList.add(indexTermFrequencyPair);
             lexicon.put(term, entry);
         }
     }
@@ -149,39 +145,4 @@ public class InvertedIndexGenerator {
         }
     }
 
-}
-
-class IndexEntry {
-    String term;
-    int documentFrequency;
-    int byteOffset;
-    ArrayList<Pair> invertedList = new ArrayList<>();
-
-    @Override
-    public String toString() {
-        return "IndexEntry{" +
-                "term='" + term + '\'' +
-                ", documentFrequency=" + documentFrequency +
-                ", byteOffset=" + byteOffset +
-                ", invertedList=" + invertedList +
-                "}";
-    }
-}
-
-class Pair {
-    int docID;
-    int termFrequency;
-
-    public Pair(int docID, int termFrequency) {
-        this.docID = docID;
-        this.termFrequency = termFrequency;
-    }
-
-    @Override
-    public String toString() {
-        return "Pair{" +
-                "docID=" + docID +
-                ", termFrequency=" + termFrequency +
-                '}';
-    }
 }

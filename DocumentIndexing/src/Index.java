@@ -47,8 +47,16 @@ public class Index {
                 Toolkit.getDefaultToolkit().beep();
                 System.out.println("Time: " + duration + "seconds");
             } else {
+                long startTime = System.nanoTime();
+
                 InvertedIndexGenerator generator = new InvertedIndexGenerator(articleFile, printTerms);
                 generator.createInvertedIndex();
+
+                long endTime = System.nanoTime();
+
+                double duration = (endTime - startTime) * 0.000000001;
+                Toolkit.getDefaultToolkit().beep();
+                System.out.println("Time: " + duration + "seconds");
             }
         } catch (IOException e) {
             e.printStackTrace();
