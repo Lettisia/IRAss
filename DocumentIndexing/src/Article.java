@@ -18,7 +18,9 @@ public class Article {
     void parse(StopwordRemover stopwordRemover) {
         toLowerCase();
         tokenise();
-        removeStopwords(stopwordRemover);
+        if (stopwordRemover != null) {
+            removeStopwords(stopwordRemover);
+        }
     }
 
     HashMap<String, Integer> countTerms() {
