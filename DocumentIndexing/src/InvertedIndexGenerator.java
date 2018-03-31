@@ -15,7 +15,7 @@ public class InvertedIndexGenerator {
 
 	private Scanner scanner = null;
 	private HashMap<String, IndexEntry> lexicon = new HashMap<>();
-	private HashMap<Integer, String> DocumentIDMap = new HashMap<>();
+	private HashMap<Integer, String> documentIDMap = new HashMap<>();
 	private boolean printTerms = false;
 	private StopwordRemover stopwordRemover = null;
 
@@ -40,7 +40,7 @@ public class InvertedIndexGenerator {
 			printTerms(article);
 			addToLexicon(article);
 		}
-		new FileHandling(DocumentIDMap,lexicon);
+		new FileHandling(documentIDMap,lexicon);
 		if (printTerms) {
 			for (String term : lexicon.keySet()) {
 				System.out.println(lexicon.get(term));
@@ -100,7 +100,7 @@ public class InvertedIndexGenerator {
 			headline = findMatch(matcher.group(1), "HEADLINE");
 			text = findMatch(matcher.group(1), "TEXT");
 			article = new Article(docNo, headline, text);
-			DocumentIDMap.put(article.getDocumentIndex(), docNo);
+			documentIDMap.put(article.getDocumentIndex(), docNo);
 		}
 		return article;
 	}
@@ -137,7 +137,7 @@ public class InvertedIndexGenerator {
 
 
 	private void printMap() throws IOException {
-		//        for (Entry<Integer, String> entry : DocumentIDMap.entrySet()) {
+		//        for (Entry<Integer, String> entry : documentIDMap.entrySet()) {
 		//            System.out.println(entry.getKey() + ":" + entry.getValue());
 		//        }
 	}
