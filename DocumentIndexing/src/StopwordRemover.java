@@ -1,12 +1,10 @@
 import java.io.FileInputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Scanner;
 
 public class StopwordRemover {
     private HashMap<String, String> stopwords = new HashMap<>();
-
 
     public StopwordRemover(String filename) {
         readStopwordsFromFile(filename);
