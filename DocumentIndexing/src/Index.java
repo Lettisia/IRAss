@@ -6,11 +6,10 @@ import java.io.IOException;
 public class Index {
 
     public static void main(String[] args) {
-        String stopFile = "DocumentIndexing/src/resources/stoplist";
+        String stopFile = "src/stoplist";
         String articleFile = null;
         boolean removeStopWords = false;
         boolean printTerms = false;
-
 
         if (args.length > 0) {
             for (int i = 0; i < args.length; i++) {
@@ -32,7 +31,7 @@ public class Index {
 
         try {
             if (articleFile == null) {
-                File file = new File("DocumentIndexing/src/resources/latimes");
+                File file = new File("src/latimes");
                 articleFile = file.getAbsolutePath();
             }
             if (removeStopWords) {
