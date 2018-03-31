@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class FileHandling {
-	private HashMap<Long, String> documentIDMap = new HashMap<>();
-	private HashMap<String, IndexEntry> lexicon = new HashMap<>();
+	private HashMap<Integer, String> documentIDMap;
+	private HashMap<String, IndexEntry> lexicon;
 
-	public FileHandling(HashMap<Long, String> documentIDMap, HashMap<String, IndexEntry> lexicon) throws IOException{
+	public FileHandling(HashMap<Integer, String> documentIDMap, HashMap<String, IndexEntry> lexicon) throws IOException{
 		this.documentIDMap = documentIDMap;	
 		this.lexicon = lexicon;
 		writeFile();
@@ -19,31 +19,36 @@ public class FileHandling {
 		System.out.println("Writing data to the random access file!");
 		//DocumentIDMap
 		RandomAccessFile randomFile = new RandomAccessFile("DocumentIDMap", "rw");
-		for (Long key : documentIDMap.keySet()){
-			randomFile.writeLong(key);
+		for (Integer key : documentIDMap.keySet()){
+			randomFile.writeInt(key);
 			randomFile.writeBytes(documentIDMap.get(key));
 		}
 		randomFile.close();
 		//InvertedIndex //Lexicon
-		randomFile = new RandomAccessFile("InvertedIndex", "rw");
-		RandomAccessFile randomLexiconFile = new RandomAccessFile("lexicon", "rw");
+		RandomAccessFile indexFile = new RandomAccessFile("InvertedIndex", "rw");
+		RandomAccessFile lexiconFile = new RandomAccessFile("lexicon", "rw");
 		int byteOffset = 0;
+
 		for (String key : lexicon.keySet()){
-			ArrayList<TermFrequencyPair> invertedList = lexicon.get(key).getInvertedList();	
+			System.out.println(lexicon.get(key));
+			ArrayList<TermFrequencyPair> invertedList = lexicon.get(key).getInvertedList();
+
 			for(TermFrequencyPair termFreqPair : invertedList){
-				randomFile.seek(byteOffset);
+				indexFile.seek(byteOffset);
 				byteOffset += termFreqPair.getDocID().byteValue() + termFreqPair.getTermFrequency().byteValue();
-				randomFile.writeInt(termFreqPair.getDocID());
-				randomFile.writeInt(termFreqPair.getTermFrequency());
+				indexFile.writeInt(termFreqPair.getDocID());
+				indexFile.writeInt(termFreqPair.getTermFrequency());
 				System.out.println(byteOffset+":"+termFreqPair.getDocID()+":"+termFreqPair.getTermFrequency());
 			}
+
 			lexicon.get(key).setByteOffset(byteOffset);
-			randomLexiconFile.writeBytes(key);
-			randomLexiconFile.writeLong(byteOffset);
+			lexiconFile.writeBytes(key);
+			lexiconFile.writeInt(byteOffset);
 			System.out.println(key+":"+byteOffset);
 		}
-		randomFile.close();
-		randomLexiconFile.close();
+
+		indexFile.close();
+		lexiconFile.close();
 		System.out.println("***Done writing to random access file!");
 	}
 
@@ -55,30 +60,30 @@ public class FileHandling {
 		final int STRING_BYTE_SIZE = 2;  
 		char term;
 
-		RandomAccessFile randomFile = new RandomAccessFile("InvertedIndex", "r");
-		RandomAccessFile randomLexiconFile = new RandomAccessFile("lexicon", "r");
+		RandomAccessFile indexFile = new RandomAccessFile("InvertedIndex", "rw");
+		RandomAccessFile lexiconFile = new RandomAccessFile("lexicon", "rw");
 		
-		byteNum = STRING_BYTE_SIZE * 0;
-		randomFile.seek(byteNum);
-		term = randomLexiconFile.readChar();
-		System.out.println(term);
+		byteNum = 0;
+		indexFile.seek(byteNum);
+		term = lexiconFile.readChar();
+		System.out.println("string: " + term);
 		
-		byteNum = BYTE_SIZE * 1;
-		randomFile.seek(byteNum);
-		num = randomLexiconFile.readInt();
-		System.out.println(num);
+		byteNum = BYTE_SIZE;
+		indexFile.seek(byteNum);
+		num = lexiconFile.readInt();
+		System.out.println("first int:" + num);
 		
-		byteNum = BYTE_SIZE * 0;
-		randomFile.seek(byteNum);
-		num = randomFile.readInt();
-		System.out.println(num);
+		byteNum = 0;
+		indexFile.seek(byteNum);
+		num = indexFile.readInt();
+		System.out.println("second int:" + num);
 
-		byteNum = BYTE_SIZE * 1;
-		randomFile.seek(byteNum);
-		num = randomFile.readInt();
-		System.out.println(num);
+		byteNum = BYTE_SIZE;
+		indexFile.seek(byteNum);
+		num = indexFile.readInt();
+		System.out.println("third int:" + num);
 		
-		randomFile.close();
+		indexFile.close();
 		System.out.println("   ***Done with reading from a random access binary file.");
 	}
 }

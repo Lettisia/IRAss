@@ -17,3 +17,7 @@ DocumentIndexing/class/production/IRAss/latimes
 stoplist
 latimes-100
 latimes
+lexicon
+DocumentIDMap
+InvertedIndex
+onedoc

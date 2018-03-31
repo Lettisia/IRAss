@@ -1,6 +1,5 @@
 import java.io.*;
 import java.util.HashMap;
-import java.util.Map.Entry;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -14,16 +13,14 @@ public class InvertedIndexGenerator {
 	private static final Pattern FILTER_REGEX = Pattern.compile("<p>|</p>|[\\p{Punct}]");
 	private static final String DOC_END_TAG = "</DOC>";
 
-	private long articleCount;
 	private Scanner scanner = null;
 	private HashMap<String, IndexEntry> lexicon = new HashMap<>();
-	private HashMap<Long, String> DocumentIDMap = new HashMap<>();
+	private HashMap<Integer, String> DocumentIDMap = new HashMap<>();
 	private boolean printTerms = false;
 	private StopwordRemover stopwordRemover = null;
 
 	public InvertedIndexGenerator(String source, boolean printTerms, String stopFile) throws IOException {
 		scanner = new Scanner(new FileInputStream(source));
-		this.articleCount = 1;
 		this.printTerms = printTerms;
 		if (stopFile != null) {
 			stopwordRemover = new StopwordRemover(stopFile);
@@ -103,8 +100,7 @@ public class InvertedIndexGenerator {
 			headline = findMatch(matcher.group(1), "HEADLINE");
 			text = findMatch(matcher.group(1), "TEXT");
 			article = new Article(docNo, headline, text);
-			DocumentIDMap.put(this.articleCount, docNo);
-			this.articleCount++;
+			DocumentIDMap.put(article.getDocumentIndex(), docNo);
 		}
 		return article;
 	}
@@ -141,7 +137,7 @@ public class InvertedIndexGenerator {
 
 
 	private void printMap() throws IOException {
-		//        for (Entry<Long, String> entry : DocumentIDMap.entrySet()) {
+		//        for (Entry<Integer, String> entry : DocumentIDMap.entrySet()) {
 		//            System.out.println(entry.getKey() + ":" + entry.getValue());
 		//        }
 	}
