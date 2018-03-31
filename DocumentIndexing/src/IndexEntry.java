@@ -2,7 +2,7 @@ import java.util.ArrayList;
 
 class IndexEntry {
     String term;
-    int documentFrequency;
+    Integer documentFrequency;
     int byteOffset;
     ArrayList<TermFrequencyPair> invertedList = new ArrayList<>();
 

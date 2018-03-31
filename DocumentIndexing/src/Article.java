@@ -7,7 +7,7 @@ public class Article {
     private String docNo;
     private String text;
     private ArrayList<String> terms = new ArrayList<>();
-    private static int articleCount = 0;
+    private static int articleCount = 1;
 
     Article(String docNo, String headline, String text) {
         this.documentIndex = articleCount++;
