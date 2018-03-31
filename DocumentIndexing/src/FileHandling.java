@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class FileHandling {
+
 	private HashMap<Integer, String> documentIDMap;
 	private HashMap<String, IndexEntry> lexicon;
 
@@ -19,36 +20,34 @@ public class FileHandling {
 		System.out.println("Writing data to the random access file!");
 		//DocumentIDMap
 		RandomAccessFile randomFile = new RandomAccessFile("DocumentIDMap", "rw");
+
 		for (Integer key : documentIDMap.keySet()){
 			randomFile.writeInt(key);
 			randomFile.writeBytes(documentIDMap.get(key));
 		}
 		randomFile.close();
 		//InvertedIndex //Lexicon
-		RandomAccessFile indexFile = new RandomAccessFile("InvertedIndex", "rw");
-		RandomAccessFile lexiconFile = new RandomAccessFile("lexicon", "rw");
-		int byteOffset = 0;
 
+		randomFile = new RandomAccessFile("InvertedIndex", "rw");
+		RandomAccessFile randomLexiconFile = new RandomAccessFile("lexicon", "rw");
+		Integer byteOffset = 0;
 		for (String key : lexicon.keySet()){
-			System.out.println(lexicon.get(key));
-			ArrayList<TermFrequencyPair> invertedList = lexicon.get(key).getInvertedList();
-
+			ArrayList<TermFrequencyPair> invertedList = lexicon.get(key).getInvertedList();	
+			randomLexiconFile.writeBytes(key);
+			lexicon.get(key).setByteOffset(byteOffset);	
+			randomLexiconFile.writeInt(lexicon.get(key).getDocumentFrequency());
+			randomLexiconFile.writeLong(byteOffset);
+			System.out.println("Term:"+key+"||Doc Freq:"+lexicon.get(key).getDocumentFrequency()+"||byte offset:"+byteOffset);
 			for(TermFrequencyPair termFreqPair : invertedList){
-				indexFile.seek(byteOffset);
-				byteOffset += termFreqPair.getDocID().byteValue() + termFreqPair.getTermFrequency().byteValue();
-				indexFile.writeInt(termFreqPair.getDocID());
-				indexFile.writeInt(termFreqPair.getTermFrequency());
+				randomFile.seek(byteOffset);
+				randomFile.writeInt(termFreqPair.getDocID());
+				randomFile.writeInt(termFreqPair.getTermFrequency());
 				System.out.println(byteOffset+":"+termFreqPair.getDocID()+":"+termFreqPair.getTermFrequency());
+				byteOffset += termFreqPair.getDocID().byteValue() + termFreqPair.getTermFrequency().byteValue();
 			}
-
-			lexicon.get(key).setByteOffset(byteOffset);
-			lexiconFile.writeBytes(key);
-			lexiconFile.writeInt(byteOffset);
-			System.out.println(key+":"+byteOffset);
 		}
-
-		indexFile.close();
-		lexiconFile.close();
+		randomFile.close();
+		randomLexiconFile.close();
 		System.out.println("***Done writing to random access file!");
 	}
 
