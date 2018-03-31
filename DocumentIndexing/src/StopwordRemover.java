@@ -15,7 +15,6 @@ public class StopwordRemover {
     private void readStopwordsFromFile(String filename) {
         try {
             Scanner input = new Scanner(new FileInputStream(filename));
-
             while (input.hasNext()) {
                 stopwords.put(input.next(), "");
             }
@@ -41,11 +40,9 @@ public class StopwordRemover {
     public static void main(String[] args) {
         String sentence = "Your program must be called index and should accept an optional command line argument";
         ArrayList<String> document = new ArrayList<>(Arrays.asList(sentence.split(" ")));
-        StopwordRemover remover = new StopwordRemover("DocumentIndexing/src/resources/stoplist");
+        StopwordRemover remover = new StopwordRemover("src/stoplist");
         ArrayList<String> stopped = remover.removeStopwords(document);
         System.out.println(sentence);
         System.out.println(stopped);
     }
-
-
 }
