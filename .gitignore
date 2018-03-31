@@ -13,3 +13,11 @@ DocumentIndexing/class/production/IRAss/latimes
 .idea/modules.xml
 .idea/misc.xml
 .idea/IRAss.iml
+.idea/dictionaries/letti.xml
+stoplist
+latimes-100
+latimes
+lexicon
+DocumentIDMap
+InvertedIndex
+onedoc

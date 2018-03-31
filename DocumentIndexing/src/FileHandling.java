@@ -4,10 +4,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class FileHandling {
-	private HashMap<Long, String> documentIDMap = new HashMap<>();
-	private HashMap<String, IndexEntry> lexicon = new HashMap<>();
 
-	public FileHandling(HashMap<Long, String> documentIDMap, HashMap<String, IndexEntry> lexicon) throws IOException{
+	private HashMap<Integer, String> documentIDMap;
+	private HashMap<String, IndexEntry> lexicon;
+
+	public FileHandling(HashMap<Integer, String> documentIDMap, HashMap<String, IndexEntry> lexicon) throws IOException{
 		this.documentIDMap = documentIDMap;	
 		this.lexicon = lexicon;
 		writeFile();
@@ -19,12 +20,14 @@ public class FileHandling {
 		System.out.println("Writing data to the random access file!");
 		//DocumentIDMap
 		RandomAccessFile randomFile = new RandomAccessFile("DocumentIDMap", "rw");
-		for (Long key : documentIDMap.keySet()){
-			randomFile.writeLong(key);
+
+		for (Integer key : documentIDMap.keySet()){
+			randomFile.writeInt(key);
 			randomFile.writeBytes(documentIDMap.get(key));
 		}
 		randomFile.close();
 		//InvertedIndex //Lexicon
+
 		randomFile = new RandomAccessFile("InvertedIndex", "rw");
 		RandomAccessFile randomLexiconFile = new RandomAccessFile("lexicon", "rw");
 		Integer byteOffset = 0;
@@ -54,32 +57,32 @@ public class FileHandling {
 		int num;
 		
 		final int STRING_BYTE_SIZE = 2;  
-		String term;
+		char term;
 
-		RandomAccessFile randomFile = new RandomAccessFile("InvertedIndex", "r");
-		RandomAccessFile randomLexiconFile = new RandomAccessFile("lexicon", "r");
+		RandomAccessFile indexFile = new RandomAccessFile("InvertedIndex", "rw");
+		RandomAccessFile lexiconFile = new RandomAccessFile("lexicon", "rw");
 		
-		byteNum = STRING_BYTE_SIZE * 0;
-		randomFile.seek(byteNum);
-		term = randomLexiconFile.readLine();
-		System.out.println(term);
+		byteNum = 0;
+		indexFile.seek(byteNum);
+		term = lexiconFile.readChar();
+		System.out.println("string: " + term);
 		
-		byteNum = BYTE_SIZE * 1;
-		randomFile.seek(byteNum);
-		num = randomLexiconFile.readInt();
-		System.out.println(num);
+		byteNum = BYTE_SIZE;
+		indexFile.seek(byteNum);
+		num = lexiconFile.readInt();
+		System.out.println("first int:" + num);
 		
-		byteNum = BYTE_SIZE * 0;
-		randomFile.seek(byteNum);
-		num = randomFile.readInt();
-		System.out.println(num);
+		byteNum = 0;
+		indexFile.seek(byteNum);
+		num = indexFile.readInt();
+		System.out.println("second int:" + num);
 
-		byteNum = BYTE_SIZE * 1;
-		randomFile.seek(byteNum);
-		num = randomFile.readInt();
-		System.out.println(num);
+		byteNum = BYTE_SIZE;
+		indexFile.seek(byteNum);
+		num = indexFile.readInt();
+		System.out.println("third int:" + num);
 		
-		randomFile.close();
+		indexFile.close();
 		System.out.println("   ***Done with reading from a random access binary file.");
 	}
 }

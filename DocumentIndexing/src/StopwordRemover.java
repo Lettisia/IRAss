@@ -7,7 +7,6 @@ import java.util.Scanner;
 public class StopwordRemover {
     private HashMap<String, String> stopwords = new HashMap<>();
 
-
     public StopwordRemover(String filename) {
         readStopwordsFromFile(filename);
     }

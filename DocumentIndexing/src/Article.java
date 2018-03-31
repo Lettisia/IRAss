@@ -3,14 +3,15 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 public class Article {
-    private int documentIndex;
+    private Integer documentIndex;
     private String docNo;
     private String text;
     private ArrayList<String> terms = new ArrayList<>();
-    private static int articleCount = 0;
+    private static Integer articleCount = 1;
 
     Article(String docNo, String headline, String text) {
-        this.documentIndex = articleCount++;
+        this.documentIndex = articleCount;
+        articleCount++;
         this.docNo = docNo;
         this.text = headline + " " + text;
     }
@@ -60,7 +61,7 @@ public class Article {
         return "DocNo:" + getDocNo() + "\nText:" + getText();
     }
 
-    int getDocumentIndex() {
+    Integer getDocumentIndex() {
         return documentIndex;
     }
 
