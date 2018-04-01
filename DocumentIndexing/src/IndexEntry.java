@@ -3,12 +3,8 @@ import java.util.ArrayList;
 class IndexEntry {
     String term;
     Integer documentFrequency;
-    long byteOffset;
-    ArrayList<TermFrequencyPair> invertedList = new ArrayList<>();
-
-    public String getTerm() {
-        return term;
-    }
+    private long byteOffset;
+    final ArrayList<TermFrequencyPair> invertedList = new ArrayList<>();
 
     public void setTerm(String term) {
         this.term = term;
@@ -32,10 +28,6 @@ class IndexEntry {
 
     public ArrayList<TermFrequencyPair> getInvertedList() {
         return invertedList;
-    }
-
-    public void setInvertedList(ArrayList<TermFrequencyPair> invertedList) {
-        this.invertedList = invertedList;
     }
 
     @Override

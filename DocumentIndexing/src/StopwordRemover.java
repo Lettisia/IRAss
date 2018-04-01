@@ -4,10 +4,10 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Scanner;
 
-public class StopwordRemover {
-    private HashMap<String, String> stopwords = new HashMap<>();
+class StopwordRemover {
+    private final HashMap<String, String> stopwords = new HashMap<>();
 
-    public StopwordRemover(String filename) {
+    StopwordRemover(String filename) {
         readStopwordsFromFile(filename);
     }
 
@@ -35,7 +35,7 @@ public class StopwordRemover {
         return result;
     }
 
-    // Test
+    // Test Harness
     public static void main(String[] args) {
         String sentence = "Your program must be called index and should accept an optional command line argument";
         ArrayList<String> document = new ArrayList<>(Arrays.asList(sentence.split(" ")));

@@ -2,9 +2,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
-public class Article {
-    private Integer documentIndex;
-    private String docNo;
+class Article {
+    private final Integer documentIndex;
+    private final String docNo;
     private String text;
     private ArrayList<String> terms = new ArrayList<>();
     private static Integer articleCount = 1;
@@ -13,18 +13,21 @@ public class Article {
         this.documentIndex = articleCount;
         articleCount++;
         this.docNo = docNo;
+
         if (headline == null) {
             headline = "";
         }
         if (text == null) {
             text = "";
         }
+
         this.text = headline + " " + text;
     }
 
     void parse(StopwordRemover stopwordRemover) {
         toLowerCase();
         tokenise();
+
         if (stopwordRemover != null) {
             removeStopwords(stopwordRemover);
         }
@@ -32,6 +35,7 @@ public class Article {
 
     HashMap<String, Integer> countTerms() {
         HashMap<String, Integer> termFrequencyList = new HashMap<>();
+
         for (String term : terms) {
             if (termFrequencyList.containsKey(term)) {
                 termFrequencyList.put(term, termFrequencyList.get((term)) + 1);
@@ -59,7 +63,7 @@ public class Article {
         return docNo;
     }
 
-    public String getText() {
+    private String getText() {
         return text;
     }
 
@@ -74,10 +78,4 @@ public class Article {
     public ArrayList<String> getTerms() {
         return terms;
     }
-
-    public void setTerms(ArrayList<String> terms) {
-        this.terms = terms;
-    }
-
-
 }
