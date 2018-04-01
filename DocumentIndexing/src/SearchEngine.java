@@ -4,17 +4,15 @@ import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class SearchEngine {
-
+class SearchEngine {
     private static final String READ_MODE = "r";
     private static final boolean VERBOSE = false;
 
-    private HashMap<String, IndexEntry> lexicon = new HashMap<>();
-    private HashMap<Integer, String> documentIDMap = new HashMap<>();
-    private String indexFilename;
+    private final HashMap<String, IndexEntry> lexicon = new HashMap<>();
+    private final HashMap<Integer, String> documentIDMap = new HashMap<>();
+    private final String indexFilename;
 
-
-    public SearchEngine(String lexiconFilename, String indexFilename, String mapFilename) {
+    SearchEngine(String lexiconFilename, String indexFilename, String mapFilename) {
         readMapFile(mapFilename);
         readLexiconFile(lexiconFilename);
         this.indexFilename = indexFilename;
@@ -63,7 +61,7 @@ public class SearchEngine {
                 lexicon.put(term, entry);
             }
         } catch (EOFException e) {
-        	System.err.println("You reached the end of the lexicon file!\n");
+            System.err.println("You reached the end of the lexicon file!\n");
         } catch (IOException e) {
             System.err.println("Problem with reading from lexicon file!\n");
             e.printStackTrace();
@@ -112,7 +110,7 @@ public class SearchEngine {
             }
             return queryResult.toString();
         } else {
-            return "\nSearch term:"+ query +" not found!";
+            return "\nSearch term:" + query + " not found!";
         }
     }
 }

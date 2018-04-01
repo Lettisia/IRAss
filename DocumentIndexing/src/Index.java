@@ -2,7 +2,7 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 
-public class Index {
+class Index {
 
     public static void main(String[] args) {
         String stopFile = "src/stoplist";

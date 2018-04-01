@@ -1,26 +1,18 @@
-public class TermFrequencyPair {
-    private Integer docID;
-    private Integer termFrequency;
+class TermFrequencyPair {
+    private final Integer docID;
+    private final Integer termFrequency;
 
     TermFrequencyPair(Integer docID, Integer termFrequency) {
         this.docID = docID;
         this.termFrequency = termFrequency;
     }
 
-    public Integer getDocID() {
+    Integer getDocID() {
         return docID;
     }
 
-    public void setDocID(int docID) {
-        this.docID = docID;
-    }
-
-    public Integer getTermFrequency() {
+    Integer getTermFrequency() {
         return termFrequency;
-    }
-
-    public void setTermFrequency(int termFrequency) {
-        this.termFrequency = termFrequency;
     }
 
     @Override
