@@ -2,7 +2,6 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 
-
 public class Index {
 
     public static void main(String[] args) {

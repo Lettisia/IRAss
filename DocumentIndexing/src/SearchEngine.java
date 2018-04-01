@@ -4,6 +4,7 @@ import java.io.RandomAccessFile;
 import java.util.HashMap;
 
 public class SearchEngine {
+
     private static final String READ_MODE = "r";
     private static final boolean VERBOSE = true;
 
