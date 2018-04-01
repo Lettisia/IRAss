@@ -33,7 +33,6 @@ public class InvertedIndexGenerator {
 		this(source, printTerms, null);
 	}
 
-
 	public void createInvertedIndex() throws IOException {
 		while (scanner.hasNext()) {
 			String document = readOneDocFromFile().toLowerCase();
@@ -48,13 +47,12 @@ public class InvertedIndexGenerator {
 		writer.writeIndexFiles();
 
 		if (printTerms) {
-//			for (String term : lexicon.keySet()) {
-//				System.out.println(lexicon.get(term));
-//			}
+			for (String term : lexicon.keySet()) {
+				System.out.println(lexicon.get(term));
+			}
 			System.out.println(lexicon.size());
 		}
 	}
-
 
 	private void addToLexicon(Article article) {
 		HashMap<String, Integer> countedTerms = article.countTerms();
@@ -93,7 +91,6 @@ public class InvertedIndexGenerator {
 		return document;
 	}
 
-
 	private Article loadOneArticle(String document) throws IOException {
 		Article article = null;
 		String docNo;
@@ -110,7 +107,6 @@ public class InvertedIndexGenerator {
 		}
 		return article;
 	}
-
 
 	private String findMatch(String str, String tag) {
 		Matcher matcher = null;
@@ -130,7 +126,7 @@ public class InvertedIndexGenerator {
 
 		if (matcher != null && matcher.find()) {
 			if (isTextField(tag))
-				return FILTER_REGEX.matcher(matcher.group(1)).replaceAll("");
+				return (FILTER_REGEX.matcher(matcher.group(1)).replaceAll(" ")).replaceAll("[0-9]", "");
 			else
 				return matcher.group(1);
 		}
@@ -141,30 +137,10 @@ public class InvertedIndexGenerator {
 		return tag.equalsIgnoreCase("HEADLINE") || tag.equalsIgnoreCase("TEXT");
 	}
 
-//	private void printMap() throws IOException {
-//		for (Entry<Integer, String> entry : documentIDMap.entrySet()) {
-//			System.out.println(entry.getKey() + ":" + entry.getValue());
-//		}
-//	}
-	
-//	private void queryMethod(String query) throws IOException {
-//		/*
-//		Term:rival||Doc Freq:4||byte offset:157992
-//		157992:13:1
-//		158000:69:1
-//		158008:79:1
-//		158016:99:1
-//
-//		term: rival||docFrequency:4||byteOffset:157992
-//		DocID: 13||DocNum: la010189-0013 ||termFrequency:1
-//		term: rival||docFrequency:4||byteOffset:157992
-//		DocID: 69||DocNum: la010189-0069 ||termFrequency:1
-//		term: rival||docFrequency:4||byteOffset:157992
-//		DocID: 79||DocNum: la010189-0079 ||termFrequency:1
-//		term: rival||docFrequency:4||byteOffset:157992
-//		DocID: 99||DocNum: la010189-0099 ||termFrequency:1*/
-//		query="rival";
-//		new FileWriter(documentIDMap, query);
-//	}
+	private void printMap() throws IOException {
+		for (Entry<Integer, String> entry : documentIDMap.entrySet()) {
+			System.out.println(entry.getKey() + ":" + entry.getValue());
+		}
+	}
 
 }
