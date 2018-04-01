@@ -6,7 +6,7 @@ import java.util.HashMap;
 public class SearchEngine {
 
     private static final String READ_MODE = "r";
-    private static final boolean VERBOSE = true;
+    private static final boolean VERBOSE = false;
 
     private HashMap<String, IndexEntry> lexicon = new HashMap<>();
     private HashMap<Integer, String> documentIDMap = new HashMap<>();
@@ -29,14 +29,12 @@ public class SearchEngine {
                 documentIDMap.put(docIndex, docNo);
             }
         } catch (EOFException e) {
-            System.err.println("Naughty! You read past end of map file");
-            e.printStackTrace();
+            System.err.println("You reached the end of the map file!");
         } catch (IOException e) {
-            System.err.println("Problem with reading from map file");
+            System.err.println("Oops! Problem with reading from map file!");
             e.printStackTrace();
         }
     }
-
 
     private void readLexiconFile(String lexiconFilename) {
         try (RandomAccessFile lexiconFile = new RandomAccessFile(lexiconFilename, READ_MODE)) {
@@ -64,10 +62,9 @@ public class SearchEngine {
                 lexicon.put(term, entry);
             }
         } catch (EOFException e) {
-            System.err.println("Naughty! You read past end of lexicon file");
-            e.printStackTrace();
+        	System.err.println("You reached the end of the lexicon file!\n");
         } catch (IOException e) {
-            System.err.println("Problem with reading from lexicon file");
+            System.err.println("Problem with reading from lexicon file!\n");
             e.printStackTrace();
         }
     }
@@ -101,12 +98,12 @@ public class SearchEngine {
                 }
 
             } catch (IOException e) {
-                System.err.println("Problem with reading from index file");
+                System.err.println("Problem with reading from index file!\n");
                 e.printStackTrace();
             }
             return queryResult.toString();
         } else {
-            return "Ha ha, not found!";
+            return "\nSearch term:"+ query +" not found!";
         }
     }
 }

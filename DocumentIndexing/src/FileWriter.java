@@ -14,7 +14,6 @@ public class FileWriter {
         this.lexicon = lexicon;
     }
 
-
     public void writeMapFile() {
         try (RandomAccessFile mapFile = new RandomAccessFile("map", "rw");) {
             for (Integer key : documentIDMap.keySet()) {
@@ -22,15 +21,13 @@ public class FileWriter {
                 mapFile.writeUTF(documentIDMap.get(key));
             }
         } catch (IOException e) {
-            System.err.println("Problem with writing to map file");
+            System.err.println("Problem with writing to map file!\n");
             e.printStackTrace();
         }
     }
 
-
     public void writeIndexFiles() {
-        System.out.println("Writing data to the random access file!");
-
+        System.out.println("***Writing data to invlists file!");
         try (RandomAccessFile indexFile = new RandomAccessFile("invlists", "rw")) {
             try (RandomAccessFile randomLexiconFile = new RandomAccessFile("lexicon", "rw")) {
                 long byteOffset = 0;
@@ -40,9 +37,7 @@ public class FileWriter {
                     randomLexiconFile.writeUTF(key);
                     randomLexiconFile.writeInt(lexicon.get(key).getDocumentFrequency());
                     randomLexiconFile.writeLong(byteOffset);
-                    //System.out.println("Term:"+key+"||Doc Freq:"+lexicon.get(key).getDocumentFrequency()+"||byte offset:"+byteOffset);
                     for (TermFrequencyPair termFreqPair : invertedList) {
-                        //System.out.println(byteOffset+":"+termFreqPair.getDocID()+":"+termFreqPair.getTermFrequency());
                         indexFile.seek(byteOffset);
                         indexFile.writeInt(termFreqPair.getDocID());
                         indexFile.writeInt(termFreqPair.getTermFrequency());
@@ -50,14 +45,14 @@ public class FileWriter {
                     }
                 }
             } catch (IOException e) {
-                System.err.println("Problem with writing to lexicon file");
+                System.err.println("Problem with writing to lexicon file!\n");
                 e.printStackTrace();
             }
         } catch (IOException e) {
-            System.err.println("Problem with writing to invlists file");
+            System.err.println("Problem with writing to invlists file!\n");
             e.printStackTrace();
         }
-        System.out.println("***Done writing to random access file!");
+        System.out.println("***Done writing to invlists file!\n");
     }
 
 }
