@@ -32,7 +32,6 @@ public class InvertedIndexGenerator {
 		this(source, printTerms, null);
 	}
 
-
 	public void createInvertedIndex() throws IOException {
 		while (scanner.hasNext()) {
 			String document = readOneDocFromFile().toLowerCase();
@@ -54,7 +53,6 @@ public class InvertedIndexGenerator {
     private boolean hasTerms(Article article) {
         return article.getTerms().size() > 0;
     }
-
 
     private void addToLexicon(Article article) {
 		HashMap<String, Integer> countedTerms = article.countTerms();
@@ -95,6 +93,7 @@ public class InvertedIndexGenerator {
 
 
 	private Article loadOneArticle(String document) {
+
 		Article article = null;
 		String docNo;
 		String headline;
@@ -115,7 +114,6 @@ public class InvertedIndexGenerator {
 		return article;
 	}
 
-
 	private String findMatch(String str, String tag) {
 		Matcher matcher = null;
 		switch (tag) {
@@ -134,7 +132,7 @@ public class InvertedIndexGenerator {
 
 		if (matcher != null && matcher.find()) {
 			if (isTextField(tag))
-				return FILTER_REGEX.matcher(matcher.group(1)).replaceAll("");
+				return (FILTER_REGEX.matcher(matcher.group(1)).replaceAll(" ")).replaceAll("[0-9]", "");
 			else
 				return matcher.group(1);
 		}
