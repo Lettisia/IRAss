@@ -147,6 +147,22 @@ public class InvertedIndexGenerator {
 	}
 	
 	private void queryMethod(String query) throws IOException {
+		/*
+		Term:rival||Doc Freq:4||byte offset:157992
+		157992:13:1
+		158000:69:1
+		158008:79:1
+		158016:99:1
+		
+		term: rival||docFrequency:4||byteOffset:157992
+		DocID: 13||DocNum: la010189-0013 ||termFrequency:1
+		term: rival||docFrequency:4||byteOffset:157992
+		DocID: 69||DocNum: la010189-0069 ||termFrequency:1
+		term: rival||docFrequency:4||byteOffset:157992
+		DocID: 79||DocNum: la010189-0079 ||termFrequency:1
+		term: rival||docFrequency:4||byteOffset:157992
+		DocID: 99||DocNum: la010189-0099 ||termFrequency:1*/
+		query="rival";
 		new FileHandling(documentIDMap, query);
 	}
 

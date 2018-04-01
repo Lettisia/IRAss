@@ -1,4 +1,3 @@
-import java.io.EOFException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
@@ -44,9 +43,9 @@ public class FileHandling {
 			randomLexiconFile.writeUTF(key);
 			randomLexiconFile.writeInt(lexicon.get(key).getDocumentFrequency());
 			randomLexiconFile.writeLong(byteOffset);
-			System.out.println("Term:"+key+"||Doc Freq:"+lexicon.get(key).getDocumentFrequency()+"||byte offset:"+byteOffset);
+			//System.out.println("Term:"+key+"||Doc Freq:"+lexicon.get(key).getDocumentFrequency()+"||byte offset:"+byteOffset);
 			for(TermFrequencyPair termFreqPair : invertedList){
-				System.out.println(byteOffset+":"+termFreqPair.getDocID()+":"+termFreqPair.getTermFrequency());
+				//System.out.println(byteOffset+":"+termFreqPair.getDocID()+":"+termFreqPair.getTermFrequency());
 				randomFile.seek(byteOffset);
 				randomFile.writeInt(termFreqPair.getDocID());
 				randomFile.writeInt(termFreqPair.getTermFrequency());
@@ -76,23 +75,25 @@ public class FileHandling {
 			while(true){
 				term = lexiconFile.readUTF();
 				docFrequency = lexiconFile.readInt();
-				byteOffset = lexiconFile.readLong();	
+				byteOffset = lexiconFile.readLong();
 				if(term.equals(query)){
-					indexFile.seek(byteOffset);
-					docID = indexFile.readInt();
-					termFrequency = indexFile.readInt();
 					System.out.print("term: " + term);
 					System.out.print("||docFrequency:" + docFrequency);
 					System.out.print("||byteOffset:" + byteOffset);
 					System.out.println("");
-					for(Integer key : documentIDMap.keySet()){
-						if(docID == key){
-							System.out.print("DocID: " + docID);
-							System.out.print("||DocNum:"+documentIDMap.get(key));
+					indexFile.seek(byteOffset);
+					for(int i=0;i<docFrequency;i++){
+						docID = indexFile.readInt();
+						termFrequency = indexFile.readInt();
+						for(Integer key : documentIDMap.keySet()){
+							if(docID == key){
+								System.out.print("DocID: " + docID);
+								System.out.print("||DocNum:"+documentIDMap.get(key));
+							}
 						}
+						System.out.print("||termFrequency:" + termFrequency);
+						System.out.println("");
 					}
-					System.out.print("||termFrequency:" + termFrequency);
-					System.out.println("");
 					break;
 				}
 			}
