@@ -12,7 +12,7 @@ public class Search {
 				SearchEngine searchEngine = new SearchEngine(lexiconFile, indexFile, mapFile);
 				for (int i = 3; i < args.length; i++) {
 					String queryTerm = args[i];
-					System.out.println(searchEngine.search(queryTerm));
+					searchEngine.processQueryTerms(queryTerm);
 				}
 			}
 		}
