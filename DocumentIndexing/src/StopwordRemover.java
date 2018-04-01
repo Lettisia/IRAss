@@ -1,6 +1,5 @@
 import java.io.FileInputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Scanner;
 
@@ -35,13 +34,4 @@ class StopwordRemover {
         return result;
     }
 
-    // Test Harness
-    public static void main(String[] args) {
-        String sentence = "Your program must be called index and should accept an optional command line argument";
-        ArrayList<String> document = new ArrayList<>(Arrays.asList(sentence.split(" ")));
-        StopwordRemover remover = new StopwordRemover("src/stoplist");
-        ArrayList<String> stopped = remover.removeStopwords(document);
-        System.out.println(sentence);
-        System.out.println(stopped);
-    }
 }

@@ -1,6 +1,7 @@
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 class SearchEngine {
@@ -65,6 +66,14 @@ class SearchEngine {
             System.err.println("Problem with reading from lexicon file!\n");
             e.printStackTrace();
         }
+    }
+    
+    public void processQueryTerms(String query){
+		QueryProcessing queryProcessor = new QueryProcessing(query);
+		ArrayList<String> queryTerm = queryProcessor.getQueryTerms();
+		for(int i=0; i<queryTerm.size(); i++){
+			System.out.println(search(queryTerm.get(i)));
+		}
     }
 
     public String search(String query) {
