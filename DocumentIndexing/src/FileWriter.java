@@ -4,9 +4,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class FileWriter {
-
+    private static final String MODE_READ_WRITE = "rw";
     private HashMap<Integer, String> documentIDMap;
     private HashMap<String, IndexEntry> lexicon;
+
 
 
     public FileWriter(HashMap<Integer, String> documentIDMap, HashMap<String, IndexEntry> lexicon) {
@@ -14,8 +15,9 @@ public class FileWriter {
         this.lexicon = lexicon;
     }
 
+
     public void writeMapFile() {
-        try (RandomAccessFile mapFile = new RandomAccessFile("map", "rw");) {
+        try (RandomAccessFile mapFile = new RandomAccessFile("map", MODE_READ_WRITE)) {
             for (Integer key : documentIDMap.keySet()) {
                 mapFile.writeInt(key);
                 mapFile.writeUTF(documentIDMap.get(key));
@@ -28,8 +30,10 @@ public class FileWriter {
 
     public void writeIndexFiles() {
         System.out.println("***Writing data to invlists file!");
-        try (RandomAccessFile indexFile = new RandomAccessFile("invlists", "rw")) {
-            try (RandomAccessFile randomLexiconFile = new RandomAccessFile("lexicon", "rw")) {
+
+        try (RandomAccessFile indexFile = new RandomAccessFile("invlists", MODE_READ_WRITE)) {
+            try (RandomAccessFile randomLexiconFile = new RandomAccessFile("lexicon", MODE_READ_WRITE)) {
+
                 long byteOffset = 0;
                 for (String key : lexicon.keySet()) {
                     ArrayList<TermFrequencyPair> invertedList = lexicon.get(key).getInvertedList();
