@@ -33,33 +33,23 @@ public class Index {
                 File file = new File("src/latimes");
                 articleFile = file.getAbsolutePath();
             }
+
+            long startTime = System.nanoTime();
+            InvertedIndexGenerator generator;
+
             if (removeStopWords) {
-                long startTime = System.nanoTime();
-
-                InvertedIndexGenerator generator = new InvertedIndexGenerator(articleFile, printTerms, stopFile);
-                generator.createInvertedIndex();
-
-                long endTime = System.nanoTime();
-
-                double duration = (endTime - startTime) * 0.000000001;
-                Toolkit.getDefaultToolkit().beep();
-                System.out.println("Time: " + duration + "seconds");
+                generator = new InvertedIndexGenerator(articleFile, printTerms, stopFile);
             } else {
-                long startTime = System.nanoTime();
-
-                InvertedIndexGenerator generator = new InvertedIndexGenerator(articleFile, printTerms);
-                generator.createInvertedIndex();
-
-                long endTime = System.nanoTime();
-
-                double duration = (endTime - startTime) * 0.000000001 / 60.0;
-                Toolkit.getDefaultToolkit().beep();
-                System.out.println("Time: " + duration + "seconds");
+                generator = new InvertedIndexGenerator(articleFile, printTerms);
             }
+
+            generator.createInvertedIndex();
+            long endTime = System.nanoTime();
+            double duration = (endTime - startTime) * 0.000000001 / 60.0;
+            Toolkit.getDefaultToolkit().beep();
+            System.out.println("Time: " + duration + "seconds");
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
-
 }
