@@ -96,7 +96,7 @@ public class SearchEngine {
                         System.out.println();
                     }
 
-                    queryResult.append(docNo).append(" ").append(termFrequency).append("/n");
+                    queryResult.append(docNo).append(" ").append(termFrequency).append("\n");
                 }
 
             } catch (IOException e) {
