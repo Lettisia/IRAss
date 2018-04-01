@@ -19,7 +19,7 @@ public class FileWriter {
         try (RandomAccessFile mapFile = new RandomAccessFile("map", "rw");) {
             for (Integer key : documentIDMap.keySet()) {
                 mapFile.writeInt(key);
-                mapFile.writeBytes(documentIDMap.get(key));
+                mapFile.writeUTF(documentIDMap.get(key));
             }
         } catch (IOException e) {
             System.err.println("Problem with writing to map file");

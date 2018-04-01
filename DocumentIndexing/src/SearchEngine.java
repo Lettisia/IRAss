@@ -91,7 +91,7 @@ public class SearchEngine {
 
                     if (VERBOSE) {
                         System.out.print("DocID: " + docID);
-                        System.out.print("||DocNum:" + docNo);
+                        System.out.print("||DocNo:" + docNo);
                         System.out.print("||termFrequency:" + termFrequency);
                         System.out.println();
                     }
