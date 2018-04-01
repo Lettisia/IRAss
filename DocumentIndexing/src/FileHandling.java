@@ -1,3 +1,4 @@
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
@@ -7,16 +8,22 @@ public class FileHandling {
 
 	private HashMap<Integer, String> documentIDMap;
 	private HashMap<String, IndexEntry> lexicon;
+	private String query;
 
 	public FileHandling(HashMap<Integer, String> documentIDMap, HashMap<String, IndexEntry> lexicon) throws IOException{
-		this.documentIDMap = documentIDMap;	
+		this.documentIDMap = documentIDMap;
 		this.lexicon = lexicon;
 		writeFile();
+	}
+
+	public FileHandling(HashMap<Integer, String> documentIDMap, String query) throws IOException{
+		this.documentIDMap = documentIDMap;
+		this.query = query;
 		readFile();
 	}
-	
+
 	private void writeFile() throws IOException {
-		
+
 		System.out.println("Writing data to the random access file!");
 		//DocumentIDMap
 		RandomAccessFile randomFile = new RandomAccessFile("DocumentIDMap", "rw");
@@ -30,20 +37,20 @@ public class FileHandling {
 
 		randomFile = new RandomAccessFile("InvertedIndex", "rw");
 		RandomAccessFile randomLexiconFile = new RandomAccessFile("lexicon", "rw");
-		Integer byteOffset = 0;
+		long byteOffset = 0;
 		for (String key : lexicon.keySet()){
 			ArrayList<TermFrequencyPair> invertedList = lexicon.get(key).getInvertedList();	
-			randomLexiconFile.writeBytes(key);
-			lexicon.get(key).setByteOffset(byteOffset);	
+			lexicon.get(key).setByteOffset(byteOffset);
+			randomLexiconFile.writeUTF(key);
 			randomLexiconFile.writeInt(lexicon.get(key).getDocumentFrequency());
 			randomLexiconFile.writeLong(byteOffset);
 			System.out.println("Term:"+key+"||Doc Freq:"+lexicon.get(key).getDocumentFrequency()+"||byte offset:"+byteOffset);
 			for(TermFrequencyPair termFreqPair : invertedList){
+				System.out.println(byteOffset+":"+termFreqPair.getDocID()+":"+termFreqPair.getTermFrequency());
 				randomFile.seek(byteOffset);
 				randomFile.writeInt(termFreqPair.getDocID());
 				randomFile.writeInt(termFreqPair.getTermFrequency());
-				System.out.println(byteOffset+":"+termFreqPair.getDocID()+":"+termFreqPair.getTermFrequency());
-				byteOffset += termFreqPair.getDocID().byteValue() + termFreqPair.getTermFrequency().byteValue();
+				byteOffset = randomFile.getFilePointer();
 			}
 		}
 		randomFile.close();
@@ -52,37 +59,53 @@ public class FileHandling {
 	}
 
 	private void readFile() throws IOException {
-		final int BYTE_SIZE = 4;  
-		long byteNum;
-		int num;
-		
-		final int STRING_BYTE_SIZE = 2;  
-		char term;
 
-		RandomAccessFile indexFile = new RandomAccessFile("InvertedIndex", "rw");
-		RandomAccessFile lexiconFile = new RandomAccessFile("lexicon", "rw");
-		
-		byteNum = 0;
-		indexFile.seek(byteNum);
-		term = lexiconFile.readChar();
-		System.out.println("string: " + term);
-		
-		byteNum = BYTE_SIZE;
-		indexFile.seek(byteNum);
-		num = lexiconFile.readInt();
-		System.out.println("first int:" + num);
-		
-		byteNum = 0;
-		indexFile.seek(byteNum);
-		num = indexFile.readInt();
-		System.out.println("second int:" + num);
+		String term;
+		long byteOffset;
+		int docFrequency;
+		int docID;
+		int termFrequency;
 
-		byteNum = BYTE_SIZE;
-		indexFile.seek(byteNum);
-		num = indexFile.readInt();
-		System.out.println("third int:" + num);
-		
-		indexFile.close();
-		System.out.println("   ***Done with reading from a random access binary file.");
+		RandomAccessFile indexFile = new RandomAccessFile("InvertedIndex", "r");
+		RandomAccessFile lexiconFile = new RandomAccessFile("lexicon", "r");
+
+		lexiconFile.seek(0);
+
+		try
+		{
+			while(true){
+				term = lexiconFile.readUTF();
+				docFrequency = lexiconFile.readInt();
+				byteOffset = lexiconFile.readLong();	
+				if(term.equals(query)){
+					indexFile.seek(byteOffset);
+					docID = indexFile.readInt();
+					termFrequency = indexFile.readInt();
+					System.out.print("term: " + term);
+					System.out.print("||docFrequency:" + docFrequency);
+					System.out.print("||byteOffset:" + byteOffset);
+					System.out.println("");
+					for(Integer key : documentIDMap.keySet()){
+						if(docID == key){
+							System.out.print("DocID: " + docID);
+							System.out.print("||DocNum:"+documentIDMap.get(key));
+						}
+					}
+					System.out.print("||termFrequency:" + termFrequency);
+					System.out.println("");
+					break;
+				}
+			}
+		}
+		catch (IOException ex)
+		{
+			System.out.println("End of file reached!");
+		}
+		finally
+		{
+			lexiconFile.close();
+			indexFile.close();
+			System.out.println("***Done with reading from a random access binary file.");
+		}
 	}
 }

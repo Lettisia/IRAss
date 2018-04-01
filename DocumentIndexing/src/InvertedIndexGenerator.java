@@ -1,5 +1,7 @@
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map.Entry;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -40,7 +42,10 @@ public class InvertedIndexGenerator {
 			printTerms(article);
 			addToLexicon(article);
 		}
+
 		new FileHandling(documentIDMap,lexicon);
+		queryMethod("vladimir");
+
 		if (printTerms) {
 			for (String term : lexicon.keySet()) {
 				System.out.println(lexicon.get(term));
@@ -135,11 +140,14 @@ public class InvertedIndexGenerator {
 		return tag.equalsIgnoreCase("HEADLINE") || tag.equalsIgnoreCase("TEXT");
 	}
 
-
 	private void printMap() throws IOException {
-		//        for (Entry<Integer, String> entry : documentIDMap.entrySet()) {
-		//            System.out.println(entry.getKey() + ":" + entry.getValue());
-		//        }
+		for (Entry<Integer, String> entry : documentIDMap.entrySet()) {
+			System.out.println(entry.getKey() + ":" + entry.getValue());
+		}
+	}
+	
+	private void queryMethod(String query) throws IOException {
+		new FileHandling(documentIDMap, query);
 	}
 
 }

@@ -3,7 +3,7 @@ import java.util.ArrayList;
 class IndexEntry {
     String term;
     Integer documentFrequency;
-    int byteOffset;
+    long byteOffset;
     ArrayList<TermFrequencyPair> invertedList = new ArrayList<>();
 
     public String getTerm() {
@@ -22,11 +22,11 @@ class IndexEntry {
         this.documentFrequency = documentFrequency;
     }
 
-    public int getByteOffset() {
+    public long getByteOffset() {
         return byteOffset;
     }
 
-    public void setByteOffset(int byteOffset) {
+    public void setByteOffset(long byteOffset) {
         this.byteOffset = byteOffset;
     }
 
