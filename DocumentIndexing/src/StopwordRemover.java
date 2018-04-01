@@ -34,14 +34,14 @@ public class StopwordRemover {
         }
         return result;
     }
-//
-//    // Test
-//    public static void main(String[] args) {
-//        String sentence = "Your program must be called index and should accept an optional command line argument";
-//        ArrayList<String> document = new ArrayList<>(Arrays.asList(sentence.split(" ")));
-//        StopwordRemover remover = new StopwordRemover("src/stoplist");
-//        ArrayList<String> stopped = remover.removeStopwords(document);
-//        System.out.println(sentence);
-//        System.out.println(stopped);
-//    }
+
+    // Test
+    public static void main(String[] args) {
+        String sentence = "Your program must be called index and should accept an optional command line argument";
+        ArrayList<String> document = new ArrayList<>(Arrays.asList(sentence.split(" ")));
+        StopwordRemover remover = new StopwordRemover("src/stoplist");
+        ArrayList<String> stopped = remover.removeStopwords(document);
+        System.out.println(sentence);
+        System.out.println(stopped);
+    }
 }

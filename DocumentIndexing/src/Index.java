@@ -52,7 +52,7 @@ public class Index {
 
                 long endTime = System.nanoTime();
 
-                double duration = (endTime - startTime) * 0.000000001;
+                double duration = (endTime - startTime) * 0.000000001 / 60.0;
                 Toolkit.getDefaultToolkit().beep();
                 System.out.println("Time: " + duration + "seconds");
             }
