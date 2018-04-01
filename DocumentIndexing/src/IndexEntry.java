@@ -10,23 +10,23 @@ class IndexEntry {
         this.term = term;
     }
 
-    public int getDocumentFrequency() {
+    int getDocumentFrequency() {
         return documentFrequency;
     }
 
-    public void setDocumentFrequency(int documentFrequency) {
+    void setDocumentFrequency(int documentFrequency) {
         this.documentFrequency = documentFrequency;
     }
 
-    public long getByteOffset() {
+    long getByteOffset() {
         return byteOffset;
     }
 
-    public void setByteOffset(long byteOffset) {
+    void setByteOffset(long byteOffset) {
         this.byteOffset = byteOffset;
     }
 
-    public ArrayList<TermFrequencyPair> getInvertedList() {
+    ArrayList<TermFrequencyPair> getInvertedList() {
         return invertedList;
     }
 

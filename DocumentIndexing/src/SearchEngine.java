@@ -68,15 +68,15 @@ class SearchEngine {
         }
     }
     
-    public void processQueryTerms(String query){
+    void processQueryTerms(String query){
 		QueryProcessing queryProcessor = new QueryProcessing(query);
 		ArrayList<String> queryTerm = queryProcessor.getQueryTerms();
-		for(int i=0; i<queryTerm.size(); i++){
-			System.out.println(search(queryTerm.get(i)));
-		}
+        for (String aQueryTerm : queryTerm) {
+            System.out.println(search(aQueryTerm));
+        }
     }
 
-    public String search(String query) {
+    private String search(String query) {
         if (lexicon.containsKey(query)) {
             StringBuilder queryResult = new StringBuilder();
             queryResult.append(query).append("\n");

@@ -1,15 +1,15 @@
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class QueryProcessing {
+class QueryProcessing {
 	
 	private String query;
-	private StopwordRemover stopwordRemover = null;
+	private final StopwordRemover stopwordRemover;
     private ArrayList<String> queryTerms = new ArrayList<>();
 
-	public QueryProcessing(String query){
+	QueryProcessing(String query){
 		this.query = query;
-		stopwordRemover = new StopwordRemover("src/stoplist");
+		stopwordRemover = new StopwordRemover("/home/inforet/a1/stoplist");
 		parse();
 	}
 	
@@ -39,11 +39,8 @@ public class QueryProcessing {
         }
 	}
 
-	public ArrayList<String> getQueryTerms() {
+	ArrayList<String> getQueryTerms() {
 		return queryTerms;
 	}
 
-	public String getQuery() {
-		return query;
-	}
 }
