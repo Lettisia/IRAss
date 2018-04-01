@@ -45,7 +45,7 @@ public class SearchEngine {
 
             lexiconFile.seek(startOfFile);
 
-            while (lexiconFile.getFilePointer() < endOfFile) {
+            while (lexiconFile.getFilePointer() <= endOfFile) {
                 IndexEntry entry = new IndexEntry();
                 String term = lexiconFile.readUTF();
                 int docFrequency = lexiconFile.readInt();

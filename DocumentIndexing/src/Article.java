@@ -13,6 +13,12 @@ public class Article {
         this.documentIndex = articleCount;
         articleCount++;
         this.docNo = docNo;
+        if (headline == null) {
+            headline = "";
+        }
+        if (text == null) {
+            text = "";
+        }
         this.text = headline + " " + text;
     }
 

@@ -1,7 +1,6 @@
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Map.Entry;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -38,25 +37,26 @@ public class InvertedIndexGenerator {
 		while (scanner.hasNext()) {
 			String document = readOneDocFromFile().toLowerCase();
 			Article article = loadOneArticle(document);
-			article.parse(stopwordRemover);
-			printTerms(article);
-			addToLexicon(article);
+			if (article != null) {
+                article.parse(stopwordRemover);
+                if (hasTerms(article)) {
+                    printTerms(article);
+                    addToLexicon(article);
+                }
+            }
 		}
 
 		FileWriter writer = new FileWriter(documentIDMap,lexicon);
 		writer.writeMapFile();
 		writer.writeIndexFiles();
-
-		if (printTerms) {
-//			for (String term : lexicon.keySet()) {
-//				System.out.println(lexicon.get(term));
-//			}
-			System.out.println(lexicon.size());
-		}
 	}
 
+    private boolean hasTerms(Article article) {
+        return article.getTerms().size() > 0;
+    }
 
-	private void addToLexicon(Article article) {
+
+    private void addToLexicon(Article article) {
 		HashMap<String, Integer> countedTerms = article.countTerms();
 		for (String term : countedTerms.keySet()) {
 			IndexEntry entry;
@@ -84,17 +84,17 @@ public class InvertedIndexGenerator {
 	}
 
 	private String readOneDocFromFile() {
-		String document = "";
+		StringBuilder document = new StringBuilder();
 		String aLine = "";
 		while (scanner.hasNext() && !aLine.contains(DOC_END_TAG)) {
 			aLine = scanner.nextLine();
-			document += aLine;
+			document.append(aLine);
 		}
-		return document;
+		return document.toString();
 	}
 
 
-	private Article loadOneArticle(String document) throws IOException {
+	private Article loadOneArticle(String document) {
 		Article article = null;
 		String docNo;
 		String headline;
@@ -105,8 +105,12 @@ public class InvertedIndexGenerator {
 			docNo = findMatch(matcher.group(1), "DOCNO");
 			headline = findMatch(matcher.group(1), "HEADLINE");
 			text = findMatch(matcher.group(1), "TEXT");
-			article = new Article(docNo, headline, text);
-			documentIDMap.put(article.getDocumentIndex(), docNo);
+			if (text == null && headline == null ) {
+			    return null;
+            } else {
+                article = new Article(docNo, headline, text);
+                documentIDMap.put(article.getDocumentIndex(), docNo);
+            }
 		}
 		return article;
 	}
@@ -140,31 +144,4 @@ public class InvertedIndexGenerator {
 	private boolean isTextField(String tag) {
 		return tag.equalsIgnoreCase("HEADLINE") || tag.equalsIgnoreCase("TEXT");
 	}
-
-//	private void printMap() throws IOException {
-//		for (Entry<Integer, String> entry : documentIDMap.entrySet()) {
-//			System.out.println(entry.getKey() + ":" + entry.getValue());
-//		}
-//	}
-	
-//	private void queryMethod(String query) throws IOException {
-//		/*
-//		Term:rival||Doc Freq:4||byte offset:157992
-//		157992:13:1
-//		158000:69:1
-//		158008:79:1
-//		158016:99:1
-//
-//		term: rival||docFrequency:4||byteOffset:157992
-//		DocID: 13||DocNum: la010189-0013 ||termFrequency:1
-//		term: rival||docFrequency:4||byteOffset:157992
-//		DocID: 69||DocNum: la010189-0069 ||termFrequency:1
-//		term: rival||docFrequency:4||byteOffset:157992
-//		DocID: 79||DocNum: la010189-0079 ||termFrequency:1
-//		term: rival||docFrequency:4||byteOffset:157992
-//		DocID: 99||DocNum: la010189-0099 ||termFrequency:1*/
-//		query="rival";
-//		new FileWriter(documentIDMap, query);
-//	}
-
 }
