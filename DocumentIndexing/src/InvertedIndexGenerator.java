@@ -130,7 +130,7 @@ public class InvertedIndexGenerator {
 
 		if (matcher != null && matcher.find()) {
 			if (isTextField(tag))
-				return FILTER_REGEX.matcher(matcher.group(1)).replaceAll("");
+				return (FILTER_REGEX.matcher(matcher.group(1)).replaceAll(" ")).replaceAll("[0-9]", "");
 			else
 				return matcher.group(1);
 		}
