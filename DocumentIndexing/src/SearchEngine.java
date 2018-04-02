@@ -69,11 +69,16 @@ class SearchEngine {
     }
     
     void processQueryTerms(String query){
-		QueryProcessing queryProcessor = new QueryProcessing(query);
+        boolean removeStopwords = !isTheInLexicon();
+		QueryProcessing queryProcessor = new QueryProcessing(query, removeStopwords);
 		ArrayList<String> queryTerm = queryProcessor.getQueryTerms();
         for (String aQueryTerm : queryTerm) {
             System.out.println(search(aQueryTerm));
         }
+    }
+
+    private boolean isTheInLexicon() {
+        return lexicon.containsKey("the");
     }
 
     private String search(String query) {

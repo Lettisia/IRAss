@@ -60,23 +60,23 @@ class InvertedIndexGenerator {
 
             if (lexicon.containsKey(term)) {
                 entry = lexicon.get(term);
-                entry.documentFrequency++;
+                entry.setDocumentFrequency(entry.getDocumentFrequency() + 1);
             } else {
                 entry = new IndexEntry();
-                entry.term = term;
-                entry.documentFrequency = 1;
+                entry.setTerm(term);
+                entry.setDocumentFrequency(1);
             }
 
             TermFrequencyPair indexTermFrequencyPair = new TermFrequencyPair(article.getDocumentIndex(), countedTerms.get(term));
-            entry.invertedList.add(indexTermFrequencyPair);
+            entry.getInvertedList().add(indexTermFrequencyPair);
             lexicon.put(term, entry);
         }
     }
 
     private void printTerms(Article article) {
         if (printTerms) {
-            System.out.println("Terms: " + article.getTerms().size());
-            System.out.println(article.getTerms());
+            System.out.println("Document: " + article.getDocNo() + " Terms: " + article.getTerms().size());
+            System.out.println(article.printTerms());
         }
     }
 
