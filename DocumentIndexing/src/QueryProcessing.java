@@ -4,12 +4,14 @@ import java.util.Arrays;
 class QueryProcessing {
 	
 	private String query;
-	private final StopwordRemover stopwordRemover;
+	private StopwordRemover stopwordRemover = null;
     private ArrayList<String> queryTerms = new ArrayList<>();
 
-	QueryProcessing(String query){
+	QueryProcessing(String query, boolean removeStopwords){
 		this.query = query;
-		stopwordRemover = new StopwordRemover("/home/inforet/a1/stoplist");
+		if (removeStopwords) {
+			stopwordRemover = new StopwordRemover("stoplist");
+		}
 		parse();
 	}
 

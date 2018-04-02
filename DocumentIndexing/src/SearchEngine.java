@@ -4,14 +4,13 @@ import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class SearchEngine {
+class SearchEngine {
+    private static final String READ_MODE = "r";
+    private static final boolean VERBOSE = false;
 
-	private static final String READ_MODE = "r";
-	private static final boolean VERBOSE = false;
-
-	private HashMap<String, IndexEntry> lexicon = new HashMap<>();
-	private HashMap<Integer, String> documentIDMap = new HashMap<>();
-	private String indexFilename;
+    private final HashMap<String, IndexEntry> lexicon = new HashMap<>();
+    private final HashMap<Integer, String> documentIDMap = new HashMap<>();
+    private final String indexFilename;
 
 
 	public SearchEngine(String lexiconFilename, String indexFilename, String mapFilename) {
@@ -71,11 +70,16 @@ public class SearchEngine {
 	}
 
 	public void processQueryTerms(String query){
-		QueryProcessing queryProcessor = new QueryProcessing(query);
+        boolean removeStopwords = !isTheInLexicon();
+		QueryProcessing queryProcessor = new QueryProcessing(query, removeStopwords);
 		ArrayList<String> queryTerm = queryProcessor.getQueryTerms();
-		for(int i=0; i<queryTerm.size(); i++){
-			System.out.println(search(queryTerm.get(i)));
-		}
+        for (String aQueryTerm : queryTerm) {
+            System.out.println(search(aQueryTerm));
+        }
+    }
+
+    private boolean isTheInLexicon() {
+        return lexicon.containsKey("the");
 	}
 
 	public String search(String query) {

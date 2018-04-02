@@ -1,10 +1,10 @@
 import java.util.ArrayList;
 
 class IndexEntry {
-    String term;
-    Integer documentFrequency;
+    private String term;
+    private Integer documentFrequency;
     private long byteOffset;
-    final ArrayList<TermFrequencyPair> invertedList = new ArrayList<>();
+    private final ArrayList<TermFrequencyPair> invertedList = new ArrayList<>();
 
     public void setTerm(String term) {
         this.term = term;

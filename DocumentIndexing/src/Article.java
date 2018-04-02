@@ -37,10 +37,12 @@ class Article {
         HashMap<String, Integer> termFrequencyList = new HashMap<>();
 
         for (String term : terms) {
-            if (termFrequencyList.containsKey(term)) {
-                termFrequencyList.put(term, termFrequencyList.get((term)) + 1);
-            } else {
-                termFrequencyList.put(term, 1);
+            if (!term.equals(" ") && !term.equals("")) {
+                if (termFrequencyList.containsKey(term)) {
+                    termFrequencyList.put(term, termFrequencyList.get((term)) + 1);
+                } else {
+                    termFrequencyList.put(term, 1);
+                }
             }
         }
         return termFrequencyList;
@@ -59,7 +61,7 @@ class Article {
         terms = stopwordRemover.removeStopwords(terms);
     }
 
-    private String getDocNo() {
+    String getDocNo() {
         return docNo;
     }
 
@@ -77,5 +79,13 @@ class Article {
 
     public ArrayList<String> getTerms() {
         return terms;
+    }
+
+    public String printTerms() {
+        StringBuilder builder = new StringBuilder();
+        for (String term : terms) {
+            builder.append(term).append(" ");
+        }
+        return builder.toString();
     }
 }
