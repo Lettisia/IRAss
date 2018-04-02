@@ -17,6 +17,18 @@ Have a Java Runtime environment installed on your computer.
 
 ### How to compile and run the program?
 
+- Extract all files into a single directory.
+- Use the command ```javac *.java``` to compile all the java files.
+- Run the indexing program with ```java Index [-p] [-s <stoplist>] <sourcefile>``` where:
+  - ```-p``` is an optional parameter which causes all the terms in each article to be printed in the order they appeared.
+  - ```-s``` is also an optional parameter that, with a valid ```<stoplist>``` file as the next argument in the list, will remove the terms that are listed in the ```<stoplist>``` from the document.
+- For example use ```java Index -p -s /home/inforet/a1/stoplist /home/inforet/a1/latimes``` to run the code with stopword removal and terms printed.
+  - Note: Printing terms slows down the process considerably and is unreadable when processing the entire latimes collection.
+- Run a search with ```java Search <lexicon> <invlists> <map> <queryterm 1> [... <queryterm N>]``` where:
+  - ```<lexicon>```, ```<invlists>``` and  ```<map>``` are the file name of a lexicon, inverted list and map file generated with our Index program.
+  - ```<queryterm 1> [... <queryterm N>]``` are any number of query terms which will be searched for separately.
+- For example use ```java Search lexicon invlists map nuclear``` to search for all documents containing the term "nuclear".
+
 ## Built With
 
 * Java jdk v1.8
