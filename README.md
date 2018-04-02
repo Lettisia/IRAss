@@ -10,9 +10,7 @@ Have a Java Runtime environment installed on your computer.
 - Download and Install Java jdk v1.8
 - Set the environment variables PATH
 
-### How to run Project?
-
-### How to use?
+### How to compile and run the program?
 
 ## Built With
 
