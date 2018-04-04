@@ -70,7 +70,7 @@ class SearchEngine {
 	}
 
 	public void processQueryTerms(String query){
-        boolean removeStopwords = !isTheInLexicon();
+        boolean removeStopwords = !isTheInLexicon(query);
 		QueryProcessing queryProcessor = new QueryProcessing(query, removeStopwords);
 		ArrayList<String> queryTerm = queryProcessor.getQueryTerms();
         for (String aQueryTerm : queryTerm) {
@@ -78,8 +78,8 @@ class SearchEngine {
         }
     }
 
-    private boolean isTheInLexicon() {
-        return lexicon.containsKey("the");
+    private boolean isTheInLexicon(String query) {
+        return lexicon.containsKey(query);
 	}
 
 	public String search(String query) {
