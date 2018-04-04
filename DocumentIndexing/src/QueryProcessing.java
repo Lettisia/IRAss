@@ -10,7 +10,7 @@ class QueryProcessing {
 	QueryProcessing(String query, boolean removeStopwords){
 		this.query = query;
 		if (removeStopwords) {
-			stopwordRemover = new StopwordRemover("stoplist");
+			stopwordRemover = new StopwordRemover("/home/inforet/a1/stoplist");
 		}
 		parse();
 	}

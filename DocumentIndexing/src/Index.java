@@ -5,7 +5,7 @@ import java.io.IOException;
 class Index {
 
     public static void main(String[] args) {
-        String stopFile = "src/stoplist";
+        String stopFile = "/home/inforet/a1/stoplist";
         String articleFile = null;
         boolean removeStopWords = false;
         boolean printTerms = false;
@@ -30,7 +30,7 @@ class Index {
 
         try {
             if (articleFile == null) {
-                File file = new File("src/latimes");
+                File file = new File("home/inforet/a1/latimes");
                 articleFile = file.getAbsolutePath();
             }
 
