@@ -2,16 +2,19 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 class QueryProcessing {
-	
+
 	private String query;
 	private StopwordRemover stopwordRemover = null;
-    private ArrayList<String> queryTerms = new ArrayList<>();
+	private ArrayList<String> queryTerms = new ArrayList<>();
 
-	QueryProcessing(String query, boolean removeStopwords){
+	QueryProcessing(String query, String stoplist){
 		this.query = query;
-		if (removeStopwords) {
-			stopwordRemover = new StopwordRemover("/home/inforet/a1/stoplist");
-		}
+		stopwordRemover = new StopwordRemover(stoplist);
+		parse();
+	}
+	
+	QueryProcessing(String query){
+		this.query = query;
 		parse();
 	}
 

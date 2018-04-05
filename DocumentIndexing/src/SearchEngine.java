@@ -68,10 +68,17 @@ class SearchEngine {
 			e.printStackTrace();
 		}
 	}
-
+	
+	public void processQueryTerms(String query, String stoplist){
+		QueryProcessing queryProcessor = new QueryProcessing(query, stoplist);
+		ArrayList<String> queryTerm = queryProcessor.getQueryTerms();
+        for (String aQueryTerm : queryTerm) {
+            System.out.println(search(aQueryTerm));
+        }
+    }
+	
 	public void processQueryTerms(String query){
-        boolean removeStopwords = !isTheInLexicon(query);
-		QueryProcessing queryProcessor = new QueryProcessing(query, removeStopwords);
+		QueryProcessing queryProcessor = new QueryProcessing(query);
 		ArrayList<String> queryTerm = queryProcessor.getQueryTerms();
         for (String aQueryTerm : queryTerm) {
             System.out.println(search(aQueryTerm));
