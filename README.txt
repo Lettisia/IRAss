@@ -1,4 +1,4 @@
-# Information Retrival
+# Information Retrieval
 
 To implement an inverted index and use it to store term occurrence information. This project reads data from disk, filters it using some predefined rules, tokenizes the data, removes stopwords from a predefine list of words, writes the processed data into appropriate files on disk and finally able to retrive data from disk. 
 
@@ -26,9 +26,10 @@ Have a Java Runtime environment installed on your computer.
   - Note: Printing terms slows down the process considerably and is unreadable when processing the entire latimes collection.
 - Run a search with "java Search <lexicon> <invlists> <map> [-s <stoplist>] <queryterm 1> [... <queryterm N>]" where:
   - "<lexicon>", "<invlists>" and  "<map>" are the file name of a lexicon, inverted list and map file generated with our Index program.
-  - "-s" is an optional parameter that, with a valid "<stoplist>" file as the next argument in the list, will remove the terms that are listed in the "<stoplist>" from the document.
+  - "-s" is an optional parameter that, with a valid "<stoplist>" file as the next argument in the list, will remove the terms that are listed in the "<stoplist>" from the query.
   - "<queryterm 1> [... <queryterm N>]" are any number of query terms which will be searched for separately.
 - For example use "java Search lexicon invlists map nuclear" to search for all documents containing the term "nuclear".
+- use "java Search lexicon invlists map -s /home/inforet/a1/stoplist where is paris" to search for "paris" but not "where" or "is".
 
 ## Built With
 

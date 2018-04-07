@@ -108,36 +108,36 @@ class InvertedIndexGenerator {
                 article = new Article(docNo, headline, text);
                 documentIDMap.put(article.getDocumentIndex(), docNo);
             }
-		}
-		return article;
-	}
+        }
+        return article;
+    }
 
-	private String findMatch(String str, String tag) {
-		Matcher matcher = null;
-		switch (tag) {
-		case "DOCNO":
-			matcher = DOCNO_TAG_REGEX.matcher(str);
-			break;
-		case "HEADLINE":
-			matcher = HEADLINE_TAG_REGEX.matcher(str);
-			break;
-		case "TEXT":
-			matcher = TEXT_TAG_REGEX.matcher(str);
-			break;
-		default:
-			break;
-		}
+    private String findMatch(String str, String tag) {
+        Matcher matcher = null;
+        switch (tag) {
+            case "DOCNO":
+                matcher = DOCNO_TAG_REGEX.matcher(str);
+                break;
+            case "HEADLINE":
+                matcher = HEADLINE_TAG_REGEX.matcher(str);
+                break;
+            case "TEXT":
+                matcher = TEXT_TAG_REGEX.matcher(str);
+                break;
+            default:
+                break;
+        }
 
-		if (matcher != null && matcher.find()) {
-			if (isTextField(tag))
-				return (FILTER_REGEX.matcher(matcher.group(1)).replaceAll(" ")).replaceAll("\\d+", "");
-			else
-				return matcher.group(1);
-		}
-		return null;
-	}
+        if (matcher != null && matcher.find()) {
+            if (isTextField(tag))
+                return (FILTER_REGEX.matcher(matcher.group(1)).replaceAll(" ")).replaceAll("\\d+", "");
+            else
+                return matcher.group(1);
+        }
+        return null;
+    }
 
-	private boolean isTextField(String tag) {
-		return tag.equalsIgnoreCase("HEADLINE") || tag.equalsIgnoreCase("TEXT");
-	}
+    private boolean isTextField(String tag) {
+        return tag.equalsIgnoreCase("HEADLINE") || tag.equalsIgnoreCase("TEXT");
+    }
 }

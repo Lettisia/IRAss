@@ -81,7 +81,7 @@ class Article {
         return terms;
     }
 
-    public String printTerms() {
+    String printTerms() {
         StringBuilder builder = new StringBuilder();
         for (String term : terms) {
             builder.append(term).append(" ");

@@ -19,8 +19,7 @@ class StopwordRemover {
 
             input.close();
         } catch (Exception exception) {
-            System.err.println("Bad Stopword File " + filename);
-            exception.printStackTrace();
+            System.err.println("Error: Bad Stopword File - " + filename);
         }
     }
 

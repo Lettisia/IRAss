@@ -47,9 +47,9 @@ class Index {
             long endTime = System.nanoTime();
             double duration = (endTime - startTime) * 0.000000001 / 60.0;
             Toolkit.getDefaultToolkit().beep();
-            System.out.println("Time: " + duration + "seconds");
+            // System.out.println("Time: " + duration + "seconds");
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println("Error: Please check that you have provided a document collection file.");
         }
     }
 }
