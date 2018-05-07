@@ -6,11 +6,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 class InvertedIndexGenerator {
-    private static final Pattern DOC_TAG_REGEX = Pattern.compile("<doc>(.+?)</doc>");
-    private static final Pattern DOCNO_TAG_REGEX = Pattern.compile("<docno>(.+?)</docno>");
-    private static final Pattern HEADLINE_TAG_REGEX = Pattern.compile("<headline>(.+?)</headline>");
-    private static final Pattern TEXT_TAG_REGEX = Pattern.compile("<text>(.+?)</text>");
-    private static final Pattern FILTER_REGEX = Pattern.compile("<p>|</p>|[\\p{Punct}]");
+    private static final Pattern DOC_TAG_REGEX = Pattern.compile("<DOC>(.+?)</DOC>");
+    private static final Pattern DOCNO_TAG_REGEX = Pattern.compile("<DOCNO>(.+?)</DOCNO>");
+    private static final Pattern HEADLINE_TAG_REGEX = Pattern.compile("<HEADLINE>(.+?)</HEADLINE>");
+    private static final Pattern TEXT_TAG_REGEX = Pattern.compile("<TEXT>(.+?)</TEXT>");
+    private static final Pattern FILTER_REGEX = Pattern.compile("<P>|</P>|[\\p{Punct}]");
     private static final String DOC_END_TAG = "</DOC>";
 
     private Scanner scanner = null;
@@ -33,7 +33,7 @@ class InvertedIndexGenerator {
 
     void createInvertedIndex() {
         while (scanner.hasNext()) {
-            String document = readOneDocFromFile().toLowerCase();
+            String document = readOneDocFromFile();
             Article article = loadOneArticle(document);
             if (article != null) {
                 article.parse(stopwordRemover);
