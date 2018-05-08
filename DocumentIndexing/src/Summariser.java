@@ -5,8 +5,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Summariser {
-    private static final Pattern DOC_TAG_REGEX = Pattern.compile("<DOC>(.+?)</DOC>");
-    private static final Pattern DOCNO_TAG_REGEX = Pattern.compile("<DOCNO>(.+?)</DOCNO>");
     private static final Pattern HEADLINE_TAG_REGEX = Pattern.compile("<HEADLINE>(.+?)</HEADLINE>");
     private static final Pattern TEXT_TAG_REGEX = Pattern.compile("<TEXT>(.+?)</TEXT>");
     private static final Pattern PARAGRAPH_REGEX = Pattern.compile("<P>|</P>");
@@ -23,7 +21,7 @@ public class Summariser {
         for (String docNo :
                 docNumbers) {
             String document = readDocument(docNo);
-            ArrayList<String> sentences = grabSentences(document);
+            ArrayList<String> sentences = makeSentences(document);
             SentenceSimilarity similar = new SentenceSimilarity(sentences);
             String summary = similar.generateSummary();
             summaries.add(summary);
@@ -31,7 +29,7 @@ public class Summariser {
         return summaries;
     }
 
-    public String readDocument(String docNo) {
+    private String readDocument(String docNo) {
         StringBuilder builder = new StringBuilder();
         while (scanner.hasNext()) {
             String line = scanner.next();
@@ -45,11 +43,11 @@ public class Summariser {
         return builder.toString();
     }
 
-    public ArrayList<String> grabSentences(String document) {
-        ArrayList<String> result = new ArrayList<>();
+    private ArrayList<String> makeSentences(String document) {
+        ArrayList<String> sentences = new ArrayList<>();
 
         String headline = getHeadline(document);
-        result.add(headline);
+        sentences.add(headline);
 
         String text = getText(document);
 
@@ -59,12 +57,12 @@ public class Summariser {
         int end = boundary.next();
 
         do {
-            result.add(text.substring(start, end).trim());
+            sentences.add(text.substring(start, end).trim());
             start = end;
             end = boundary.next();
         } while (end != BreakIterator.DONE);
 
-        return result;
+        return sentences;
     }
 
     private String getText(String document) {

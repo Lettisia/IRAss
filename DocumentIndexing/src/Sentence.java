@@ -7,11 +7,11 @@ import static java.lang.Math.sqrt;
 
 public class Sentence {
     private String fullText;
-    private HashMap <String, Integer> termFrequency;
+    private HashMap<String, Integer> termFrequency;
     private int id;
     private double norm = -1;
     private int numTerms;
-    private ArrayList <Sentence> similarSentences = new ArrayList<>();
+    private ArrayList<Sentence> similarSentences = new ArrayList<>();
     private static final Pattern FILTER_REGEX = Pattern.compile("[\\p{Punct}]");
 
     public Sentence(String fullText, int id) {
@@ -50,7 +50,6 @@ public class Sentence {
         return FILTER_REGEX.matcher(text).replaceAll(" ");
     }
 
-
     public void addSimilarSentence(Sentence newSentence) {
         similarSentences.add(newSentence);
     }
@@ -70,11 +69,11 @@ public class Sentence {
 
     public double dot(Sentence other) {
         double result = 0.0;
-        for (String term: termFrequency.keySet()) {
-           Integer otherValue = other.getTermFrequency().get(term);
-           if (otherValue != null) {
-               result += otherValue * termFrequency.get(term);
-           }
+        for (String term : termFrequency.keySet()) {
+            Integer otherValue = other.getTermFrequency().get(term);
+            if (otherValue != null) {
+                result += otherValue * termFrequency.get(term);
+            }
         }
         return result;
     }
