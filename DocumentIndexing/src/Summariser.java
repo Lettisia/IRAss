@@ -1,3 +1,5 @@
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.text.BreakIterator;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -5,15 +7,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Summariser {
+    private File file;
     private static final Pattern HEADLINE_TAG_REGEX = Pattern.compile("<HEADLINE>(.+?)</HEADLINE>");
     private static final Pattern TEXT_TAG_REGEX = Pattern.compile("<TEXT>(.+?)</TEXT>");
     private static final Pattern PARAGRAPH_REGEX = Pattern.compile("<P>|</P>");
     private static final String DOC_END_TAG = "</DOC>";
 
-    private Scanner scanner;
-
     public Summariser(String filename) {
-        scanner = new Scanner(filename);
+        file = new File(filename);
     }
 
     public ArrayList<String> generateSummaries(ArrayList<String> docNumbers) {
@@ -31,14 +32,18 @@ public class Summariser {
 
     private String readDocument(String docNo) {
         StringBuilder builder = new StringBuilder();
-        while (scanner.hasNext()) {
-            String line = scanner.next();
-            if (line.contains(docNo)) {
-                while (scanner.hasNext() && !line.contains(DOC_END_TAG)) {
-                    line = scanner.next();
-                    builder.append(line);
+        try (Scanner scanner = new Scanner(file)) {
+            while (scanner.hasNext()) {
+                String line = scanner.nextLine();
+                if (line.contains(docNo)) {
+                    while (scanner.hasNext() && !line.contains(DOC_END_TAG)) {
+                        line = scanner.nextLine();
+                        builder.append(line);
+                    }
                 }
             }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         }
         return builder.toString();
     }
@@ -46,33 +51,53 @@ public class Summariser {
     private ArrayList<String> makeSentences(String document) {
         ArrayList<String> sentences = new ArrayList<>();
 
-        String headline = getHeadline(document);
+        String headline = getText(document, HEADLINE_TAG_REGEX);
         sentences.add(headline);
 
-        String text = getText(document);
+        String text = getText(document, TEXT_TAG_REGEX);
 
         BreakIterator boundary = BreakIterator.getSentenceInstance();
         boundary.setText(text);
         int start = boundary.first();
         int end = boundary.next();
 
-        do {
-            sentences.add(text.substring(start, end).trim());
-            start = end;
-            end = boundary.next();
-        } while (end != BreakIterator.DONE);
+        if (start >= 0 && end >= 0) {
+            do {
+                sentences.add(text.substring(start, end).trim());
+                start = end;
+                end = boundary.next();
+            } while (end != BreakIterator.DONE);
+        } else {
+            sentences.add(text);
+        }
 
         return sentences;
     }
 
-    private String getText(String document) {
-        Matcher matcher = TEXT_TAG_REGEX.matcher(document);
-        return (PARAGRAPH_REGEX.matcher(matcher.group(1)).replaceAll(" "));
+    private String getText(String document, Pattern regex) {
+        String headline = "";
+        Matcher matcher = regex.matcher(document);
+        if (matcher.find()) {
+            headline = matcher.group(1);
+        }
+        matcher = PARAGRAPH_REGEX.matcher(headline);
+        if (matcher.find()) {
+            headline = matcher.replaceAll(" ");
+        }
+        return headline.trim();
     }
 
-    private String getHeadline(String document) {
-        Matcher matcher = HEADLINE_TAG_REGEX.matcher(document);
-        return (PARAGRAPH_REGEX.matcher(matcher.group(1)).replaceAll(" "));
+    public static void main(String[] args) {
+        Summariser sum = new Summariser("latimes-100");
+        ArrayList<String> docNos = new ArrayList<>();
+        docNos.add("LA010189-0001");
+        docNos.add("LA010189-0023");
+        docNos.add("LA010189-0045");
+        ArrayList<String> summaries = sum.generateSummaries(docNos);
+        for (String summary :
+                summaries) {
+            System.out.println(summary + "\n");
+        }
     }
 
 }

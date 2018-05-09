@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 
 import static java.lang.Math.sqrt;
 
-public class Sentence {
+public class Sentence implements Comparable<Sentence> {
     private String fullText;
     private HashMap<String, Integer> termFrequency;
     private int id;
@@ -82,6 +82,10 @@ public class Sentence {
         return this.dot(other) / (this.getNorm() * other.getNorm());
     }
 
+    public int getSizeSimilarSentences() {
+        return similarSentences.size();
+    }
+
     public int getNumTerms() {
         return numTerms;
     }
@@ -112,5 +116,15 @@ public class Sentence {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    @Override
+    public int compareTo(Sentence o) {
+        return o.getSizeSimilarSentences() - this.getSizeSimilarSentences();
+    }
+
+    @Override
+    public String toString() {
+        return fullText;
     }
 }
