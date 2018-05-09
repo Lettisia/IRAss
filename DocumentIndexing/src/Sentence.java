@@ -10,7 +10,6 @@ public class Sentence implements Comparable<Sentence> {
     private HashMap<String, Integer> termFrequency;
     private int id;
     private double norm = -1;
-    private int numTerms;
     private ArrayList<Sentence> similarSentences = new ArrayList<>();
     private static final Pattern FILTER_REGEX = Pattern.compile("[\\p{Punct}]");
 
@@ -87,11 +86,7 @@ public class Sentence implements Comparable<Sentence> {
     }
 
     public int getNumTerms() {
-        return numTerms;
-    }
-
-    public void setNumTerms(int numTerms) {
-        this.numTerms = numTerms;
+        return termFrequency.size();
     }
 
     public String getFullText() {
