@@ -37,13 +37,14 @@ class InvertedIndexGenerator {
         while (scanner.hasNext()) {
             String document = readOneDocFromFile();
             Article article = loadOneArticle(document);
-            articles.add(article);
+            
             if (article != null) {
                 article.parse(stopwordRemover);
                 if (hasTerms(article)) {
                     printTerms(article);
                     addToLexicon(article);
                 }
+                articles.add(article);
             }
         }
 

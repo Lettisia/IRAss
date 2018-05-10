@@ -7,13 +7,14 @@ class Article {
     private final String docNo;
     private String text;
     private ArrayList<String> terms = new ArrayList<>();
-    private static Integer articleCount = 1;
-    //Document Length
+    private static int articleCount = 0;
+
+	//Document Length
     private Integer documentLength=0;
 
     Article(String docNo, String headline, String text) {
-        this.documentIndex = articleCount;
         articleCount++;
+        this.documentIndex = articleCount;
         this.docNo = docNo;
 
         if (headline == null) {
@@ -102,4 +103,8 @@ class Article {
     	this.calculateDocLength();
     	return documentLength;
     }
+    
+    public static Integer getArticleCount() {
+		return articleCount;
+	}
 }

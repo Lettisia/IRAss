@@ -17,13 +17,15 @@ class FileWriter {
 
 	void writeMapFile() {
 		try (RandomAccessFile mapFile = new RandomAccessFile("map", MODE_READ_WRITE)) {
-			mapFile.writeInt(articles.size());
+			mapFile.writeInt(Article.getArticleCount());
 			for(Article article : articles){
-				if(article != null){
-					mapFile.writeInt(article.getDocumentIndex());
-					mapFile.writeUTF(article.getDocNo());
-					mapFile.writeDouble(calculateKValue(article));
-					System.out.println(calculateKValue(article));
+				if(article!=null){
+					int docIndex = article.getDocumentIndex();
+					String docNo = article.getDocNo();
+					double kValue = calculateKValue(article);
+					mapFile.writeInt(docIndex);
+					mapFile.writeUTF(docNo);
+					mapFile.writeDouble(kValue);
 				}
 			}
 		} catch (IOException e) {
@@ -65,7 +67,7 @@ class FileWriter {
 			if(article!=null)
 				totalDocLength += article.getDocumentLength();
 		}
-		this.avgDocLength = totalDocLength/articles.size();
+		this.avgDocLength = totalDocLength/Article.getArticleCount();
 	}
 
 	//Calculating K-value
