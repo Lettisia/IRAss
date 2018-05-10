@@ -8,6 +8,8 @@ class Article {
     private String text;
     private ArrayList<String> terms = new ArrayList<>();
     private static Integer articleCount = 1;
+    //Document Length
+    private Integer documentLength=0;
 
     Article(String docNo, String headline, String text) {
         this.documentIndex = articleCount;
@@ -87,5 +89,17 @@ class Article {
             builder.append(term).append(" ");
         }
         return builder.toString();
+    }
+    
+    //Calculating document length
+    public void calculateDocLength(){
+    	for(String term : terms){
+    		documentLength += term.length();
+    	}
+    }
+    
+    public Integer getDocumentLength(){
+    	this.calculateDocLength();
+    	return documentLength;
     }
 }
