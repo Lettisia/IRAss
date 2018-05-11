@@ -31,6 +31,7 @@ class QueryProcessing {
     private static final boolean VERBOSE = true;
     private final String invlistFile;
     private final Integer numResults;
+    private final Integer queryLabel;
     
     private StopwordRemover stopwordRemover = null;
     private ArrayList<String> queryTerms = null;
@@ -45,6 +46,7 @@ class QueryProcessing {
 			int numberOfDocuments, HashMap<String, IndexEntry> lexicon, HashMap<Integer, Document> documentIDMap, 
 			String invlistFile, String stoplist) {
 
+		this.queryLabel = queryLabel;
 		this.numResults = numResults;
 		this.numberOfDocuments = numberOfDocuments;
 		this.lexicon = lexicon;
@@ -54,7 +56,7 @@ class QueryProcessing {
 			stopwordRemover = new StopwordRemover(stoplist);
 		}	
 		prcessingQueryString(queryString);
-		processingEachQueryTerm(queryLabel);
+		processingEachQueryTerm();
 	}
 
 	private void prcessingQueryString(String queryString) {
@@ -72,7 +74,7 @@ class QueryProcessing {
 		}
 	}
 
-	void processingEachQueryTerm(Integer queryLabel){
+	void processingEachQueryTerm(){
 		for(String term : queryTerms){
 			if(!term.equals("") && lexicon.containsKey(term)){
 				IndexEntry entry = lexicon.get(term);
@@ -127,7 +129,13 @@ class QueryProcessing {
 		return bm25;
 	}
 	
-	ArrayList<String> getQueryTerms() {
-		return queryTerms;
+	public void displayResults(){
+		for(Integer key : accumulativeScore.keySet()){
+			System.out.print(queryLabel + " ");
+			System.out.print(documentIDMap.get(key).getDocNo() + " ");
+			System.out.print("|| Rank:? || ");
+			System.out.print(accumulativeScore.get(key) + " ");
+			System.out.println();
+		}
 	}
 }

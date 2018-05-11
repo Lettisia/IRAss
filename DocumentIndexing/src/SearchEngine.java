@@ -36,6 +36,7 @@ class SearchEngine {
     	queryProcessor = new QueryProcessing(queryLabel, query, numResults, 
     										numOfDocuments, lexicon, documentIDMap, 
     										invlistFile, stoplistFile);
+    	queryProcessor.displayResults();
     }
 
     private void readMapFile() {
