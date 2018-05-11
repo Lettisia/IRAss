@@ -28,7 +28,7 @@ import java.util.HashMap;
 class QueryProcessing {
 	
 	private static final String READ_MODE = "r";
-    private static final boolean VERBOSE = true;
+    private static final boolean VERBOSE = false;
     private final String invlistFile;
     private final Integer numResults;
     private final Integer queryLabel;
@@ -57,18 +57,17 @@ class QueryProcessing {
 		}	
 		prcessingQueryString(queryString);
 		processingEachQueryTerm();
+		rankingDocuments();
 	}
 
 	private void prcessingQueryString(String queryString) {
 		//Filtering Query
 		queryString = queryString.replaceAll("[\\p{Punct}]", " ").replaceAll("\\d+", "");
-		
 		queryString = queryString.toLowerCase();
-		
 		//Break query into tokens
 		String[] splitQueryString = queryString.split("\\s+");
 		this.queryTerms = new ArrayList<>(Arrays.asList(splitQueryString));
-		
+		//Removing Stoplist words
 		if (stopwordRemover != null) {
 			queryTerms = stopwordRemover.removeStopwords(queryTerms);
 		}
@@ -129,13 +128,19 @@ class QueryProcessing {
 		return bm25;
 	}
 	
+	private void rankingDocuments(){
+		
+	}
+	
 	public void displayResults(){
+		System.out.println();
 		for(Integer key : accumulativeScore.keySet()){
 			System.out.print(queryLabel + " ");
 			System.out.print(documentIDMap.get(key).getDocNo() + " ");
-			System.out.print("|| Rank:? || ");
+			System.out.print("||Rank:?|| ");
 			System.out.print(accumulativeScore.get(key) + " ");
 			System.out.println();
 		}
+		System.out.println();
 	}
 }
