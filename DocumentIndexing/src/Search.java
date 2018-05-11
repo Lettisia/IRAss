@@ -8,10 +8,9 @@ class Search {
 		String queryLabel = "";
 		String numResults = "";
 		String lexiconFile = "";
-		String indexFile = "";
+		String invlistFile = "";
 		String mapFile = "";
-
-		boolean removeStopWords = false;
+		SearchEngine searchEngine = null;
 
 		if (args.length > 0) {
 			String similarityFunction = args[0];
@@ -33,7 +32,7 @@ class Search {
 						break;
 					case "-i":
 						i++;
-						indexFile = args[i];
+						invlistFile = args[i];
 						break;
 					case "-m":
 						i++;
@@ -44,31 +43,25 @@ class Search {
 						break;
 					}
 				}
+				searchEngine = new SearchEngine(lexiconFile, invlistFile, mapFile);
+				String query = "";
 				long startTime = System.nanoTime();
-				SearchEngine searchEngine = new SearchEngine(Integer.parseInt(queryLabel), Integer.parseInt(numResults), lexiconFile, indexFile, mapFile);
-
 				for (int i = 11; i < args.length; i++) {
 					switch (args[i]) {
 					case "-s":
-						removeStopWords = true;
 						stopFile = args[i + 1];
 						i++;
 						break;
 					default:
-						String queryTerm = args[i];
-
-						if (removeStopWords) {
-							searchEngine.processQueryTerms(queryTerm, stopFile);
-						} else {
-							searchEngine.processQueryTerms(queryTerm);
-						}
+						query += args[i] + " ";
 						break;
 					}
 				}
+				searchEngine.search(Integer.parseInt(queryLabel), Integer.parseInt(numResults), stopFile, query);
 				long endTime = System.nanoTime();
 				double duration = (endTime - startTime) * 0.000001 / 60.0;
-				Toolkit.getDefaultToolkit().beep();
 				System.out.println("Running time: " + duration + " ms");
+				Toolkit.getDefaultToolkit().beep();
 			} 
 		}
 

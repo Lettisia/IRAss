@@ -1,42 +1,56 @@
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 class SearchEngine {
     private static final String READ_MODE = "r";
     private static final boolean VERBOSE = false;
-
-    private final HashMap<String, IndexEntry> lexicon = new HashMap<>();
-    private final HashMap<Integer, String> documentIDMap = new HashMap<>();
-    private final String indexFilename;
     
-    private final Integer queryLabel;
-    private final Integer numResults;
+    private final String invlistFile;
+    private final String lexiconFile;
+    private final String mapFile;
+    private String stoplistFile;
+    
     private static int numOfDocuments;
 
-    SearchEngine(Integer queryLabel, Integer numResults,String lexiconFilename, String indexFilename, String mapFilename) {
-        readMapFile(mapFilename);
-        readLexiconFile(lexiconFilename);
-        this.indexFilename = indexFilename;
-        this.queryLabel = queryLabel;
-        this.numResults = numResults;
+    private final HashMap<String, IndexEntry> lexicon = new HashMap<>();
+    private final HashMap<Integer, Document> documentIDMap = new HashMap<>();
+    
+    QueryProcessing queryProcessor = null;
+
+    SearchEngine(String lexiconFile, String invlistFile, String mapFile) {
+        this.mapFile = mapFile;
+        this.invlistFile = invlistFile;
+        this.lexiconFile = lexiconFile;
+        loadDataFromFile();
+    }
+    
+    private void loadDataFromFile(){
+        readMapFile();
+        readLexiconFile();
+    }
+    
+    public void search(Integer queryLabel,Integer numResults, String stoplist, String query) {
+        this.stoplistFile = stoplist;
+    	queryProcessor = new QueryProcessing(queryLabel, query, numResults, 
+    										numOfDocuments, lexicon, documentIDMap, 
+    										invlistFile, stoplistFile);
     }
 
-    private void readMapFile(String mapFilename) {
-        try (RandomAccessFile mapFile = new RandomAccessFile(mapFilename, READ_MODE)) {
-            long endOfFile = mapFile.length();
-
-            numOfDocuments = mapFile.readInt();
+    private void readMapFile() {
+        try (RandomAccessFile mapFileName = new RandomAccessFile(mapFile, READ_MODE)) {
+            long endOfFile = mapFileName.length();
+            numOfDocuments = mapFileName.readInt();
             if (VERBOSE) {
             	System.out.println("Number of Documents: " + numOfDocuments);
             }
-            while (mapFile.getFilePointer() <= endOfFile) {
-                int docIndex = mapFile.readInt();
-                String docNo = mapFile.readUTF();
-                double kValue = mapFile.readDouble();
-                documentIDMap.put(docIndex, docNo);
+            while (mapFileName.getFilePointer() <= endOfFile) {
+                int docIndex = mapFileName.readInt();
+                String docNo = mapFileName.readUTF();
+                double kValue = mapFileName.readDouble();
+                Document document = new Document(docIndex, docNo, kValue);
+                documentIDMap.put(docIndex, document);
                 if (VERBOSE) {
                     System.out.print("DocIndex: " + docIndex);
                     System.out.print("||DocNo:" + docNo);
@@ -51,18 +65,18 @@ class SearchEngine {
         }
     }
 
-    private void readLexiconFile(String lexiconFilename) {
-        try (RandomAccessFile lexiconFile = new RandomAccessFile(lexiconFilename, READ_MODE)) {
-            long endOfFile = lexiconFile.length();
+    private void readLexiconFile() {
+        try (RandomAccessFile lexiconFileName = new RandomAccessFile(lexiconFile, READ_MODE)) {
+            long endOfFile = lexiconFileName.length();
             long startOfFile = 0L;
 
-            lexiconFile.seek(startOfFile);
+            lexiconFileName.seek(startOfFile);
 
-            while (lexiconFile.getFilePointer() <= endOfFile) {
+            while (lexiconFileName.getFilePointer() <= endOfFile) {
                 IndexEntry entry = new IndexEntry();
-                String term = lexiconFile.readUTF();
-                int docFrequency = lexiconFile.readInt();
-                long byteOffset = lexiconFile.readLong();
+                String term = lexiconFileName.readUTF();
+                int docFrequency = lexiconFileName.readInt();
+                long byteOffset = lexiconFileName.readLong();
                 entry.setTerm(term);
                 entry.setDocumentFrequency(docFrequency);
                 entry.setByteOffset(byteOffset);
@@ -80,59 +94,6 @@ class SearchEngine {
             System.err.println("You read the lexicon file!");
         }catch (IOException e) {
             System.err.println("Problem with reading from lexicon file!");
-        }
-    }
-
-    private String search(String query) {
-        if (!query.equals("") && lexicon.containsKey(query)) {
-            StringBuilder queryResult = new StringBuilder();
-            queryResult.append(queryLabel).append(" ");
-
-            IndexEntry entry = lexicon.get(query);
-
-            int docFrequency = entry.getDocumentFrequency();
-//            queryResult.append(docFrequency).append(" ");
-
-            try (RandomAccessFile indexFile = new RandomAccessFile(indexFilename, READ_MODE)) {
-                indexFile.seek(entry.getByteOffset());
-
-                for (int i = 0; i < docFrequency; i++) {
-                    int docID = indexFile.readInt();
-                    int termFrequency = indexFile.readInt();
-                    String docNo = documentIDMap.get(docID);
-
-                    if (VERBOSE) {
-                        System.out.print("DocID: " + docID);
-                        System.out.print("||DocNo:" + docNo);
-                        System.out.print("||termFrequency:" + termFrequency);
-                        System.out.println();
-                    }
-
-                    queryResult.append(docNo.trim()).append(" ").append(termFrequency).append(" ");
-                }
-
-            } catch (IOException e) {
-                System.err.println("Problem with reading from index file!");
-            }
-            return queryResult.toString();
-        } else {
-            return "";
-        }
-    }
-    
-    void processQueryTerms(String query, String stoplist) {
-        QueryProcessing queryProcessor = new QueryProcessing(query, stoplist);
-        ArrayList<String> queryTerm = queryProcessor.getQueryTerms();
-        for (String aQueryTerm : queryTerm) {
-            System.out.println(search(aQueryTerm));
-        }
-    }
-
-    void processQueryTerms(String query) {
-        QueryProcessing queryProcessor = new QueryProcessing(query);
-        ArrayList<String> queryTerm = queryProcessor.getQueryTerms();
-        for (String aQueryTerm : queryTerm) {
-            System.out.println(search(aQueryTerm));
         }
     }
 }
