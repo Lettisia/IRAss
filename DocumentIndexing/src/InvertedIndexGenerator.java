@@ -1,5 +1,6 @@
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 import java.util.regex.Matcher;
@@ -18,6 +19,7 @@ class InvertedIndexGenerator {
     private final HashMap<Integer, String> documentIDMap = new HashMap<>();
     private boolean printTerms = false;
     private StopwordRemover stopwordRemover = null;
+    private static ArrayList<Article> articles =  new ArrayList<>();
 
     InvertedIndexGenerator(String source, boolean printTerms, String stopFile) throws IOException {
         scanner = new Scanner(new FileInputStream(source));
@@ -35,16 +37,18 @@ class InvertedIndexGenerator {
         while (scanner.hasNext()) {
             String document = readOneDocFromFile();
             Article article = loadOneArticle(document);
+            
             if (article != null) {
                 article.parse(stopwordRemover);
                 if (hasTerms(article)) {
                     printTerms(article);
                     addToLexicon(article);
                 }
+                articles.add(article);
             }
         }
 
-        FileWriter writer = new FileWriter(documentIDMap, lexicon);
+        FileWriter writer = new FileWriter(lexicon, articles);
         writer.writeMapFile();
         writer.writeIndexFiles();
     }
