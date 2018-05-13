@@ -19,7 +19,7 @@ class InvertedIndexGenerator {
     private final HashMap<Integer, String> documentIDMap = new HashMap<>();
     private boolean printTerms = false;
     private StopwordRemover stopwordRemover = null;
-    private static ArrayList<Article> articles =  new ArrayList<>();
+    private static ArrayList<Document> documents =  new ArrayList<>();
 
     InvertedIndexGenerator(String source, boolean printTerms, String stopFile) throws IOException {
         scanner = new Scanner(new FileInputStream(source));
@@ -36,29 +36,29 @@ class InvertedIndexGenerator {
     void createInvertedIndex() {
         while (scanner.hasNext()) {
             String document = readOneDocFromFile();
-            Article article = loadOneArticle(document);
+            Document oneDocument = loadOneDocument(document);
             
-            if (article != null) {
-                article.parse(stopwordRemover);
-                if (hasTerms(article)) {
-                    printTerms(article);
-                    addToLexicon(article);
+            if (oneDocument != null) {
+            	oneDocument.parse(stopwordRemover);
+                if (hasTerms(oneDocument)) {
+                    printTerms(oneDocument);
+                    addToLexicon(oneDocument);
                 }
-                articles.add(article);
+                documents.add(oneDocument);
             }
         }
 
-        FileWriter writer = new FileWriter(lexicon, articles);
+        FileWriter writer = new FileWriter(lexicon, documents);
         writer.writeMapFile();
         writer.writeIndexFiles();
     }
 
-    private boolean hasTerms(Article article) {
-        return article.getTerms().size() > 0;
+    private boolean hasTerms(Document document) {
+        return document.getTerms().size() > 0;
     }
 
-    private void addToLexicon(Article article) {
-        HashMap<String, Integer> countedTerms = article.countTerms();
+    private void addToLexicon(Document document) {
+        HashMap<String, Integer> countedTerms = document.countTerms();
         for (String term : countedTerms.keySet()) {
             IndexEntry entry;
 
@@ -71,16 +71,16 @@ class InvertedIndexGenerator {
                 entry.setDocumentFrequency(1);
             }
 
-            TermFrequencyPair indexTermFrequencyPair = new TermFrequencyPair(article.getDocumentIndex(), countedTerms.get(term));
+            TermFrequencyPair indexTermFrequencyPair = new TermFrequencyPair(document.getDocumentIndex(), countedTerms.get(term));
             entry.getInvertedList().add(indexTermFrequencyPair);
             lexicon.put(term, entry);
         }
     }
 
-    private void printTerms(Article article) {
+    private void printTerms(Document document) {
         if (printTerms) {
-            System.out.println("Document: " + article.getDocNo() + " Terms: " + article.getTerms().size());
-            System.out.println(article.printTerms());
+            System.out.println("Document: " + document.getDocNo() + " Terms: " + document.getTerms().size());
+            System.out.println(document.printTerms());
         }
     }
 
@@ -94,9 +94,9 @@ class InvertedIndexGenerator {
         return document.toString();
     }
 
-    private Article loadOneArticle(String document) {
+    private Document loadOneDocument(String document) {
 
-        Article article = null;
+    	Document oneDocument = null;
         String docNo;
         String headline;
         String text;
@@ -109,11 +109,11 @@ class InvertedIndexGenerator {
             if (text == null && headline == null) {
                 return null;
             } else {
-                article = new Article(docNo, headline, text);
-                documentIDMap.put(article.getDocumentIndex(), docNo);
+            	oneDocument = new Document(docNo, headline, text);
+                documentIDMap.put(oneDocument.getDocumentIndex(), docNo);
             }
         }
-        return article;
+        return oneDocument;
     }
 
     private String findMatch(String str, String tag) {
