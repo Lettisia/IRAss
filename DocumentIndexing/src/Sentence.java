@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.regex.Pattern;
 
@@ -12,6 +13,7 @@ public class Sentence implements Comparable<Sentence> {
     private double norm = -1;
     private ArrayList<Sentence> similarSentences = new ArrayList<>();
     private static final Pattern FILTER_REGEX = Pattern.compile("[\\p{Punct}]");
+    private double rank = 0.0;
 
     public Sentence(String fullText, int id) {
         this.fullText = fullText;
@@ -51,6 +53,7 @@ public class Sentence implements Comparable<Sentence> {
 
     public void addSimilarSentence(Sentence newSentence) {
         similarSentences.add(newSentence);
+        rank = similarSentences.size();
     }
 
     public double getNorm() {
@@ -81,8 +84,28 @@ public class Sentence implements Comparable<Sentence> {
         return this.dot(other) / (this.getNorm() * other.getNorm());
     }
 
+    public double queryBiasedRank(ArrayList<String> queryTerms) {
+        double count = 0.0;
+        for (String term :
+                queryTerms) {
+            if (termFrequency.get(term) != null) {
+                count++;
+            }
+        }
+        rank = count * count / queryTerms.size();
+        return rank;
+    }
+
     public int getSizeSimilarSentences() {
         return similarSentences.size();
+    }
+
+    public double getRank() {
+        return rank;
+    }
+
+    public void setRank(double rank) {
+        this.rank = rank;
     }
 
     public int getNumTerms() {
@@ -115,7 +138,7 @@ public class Sentence implements Comparable<Sentence> {
 
     @Override
     public int compareTo(Sentence o) {
-        return o.getSizeSimilarSentences() - this.getSizeSimilarSentences();
+        return (int) Math.signum(o.getRank() - rank);
     }
 
     @Override

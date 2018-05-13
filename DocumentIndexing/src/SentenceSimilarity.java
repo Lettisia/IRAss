@@ -1,12 +1,13 @@
 import java.util.ArrayList;
 import java.util.Collections;
-
-import static java.lang.Integer.min;
+import java.util.PriorityQueue;
 
 public class SentenceSimilarity {
     private static final int SUMMARY_SENTENCE_COUNT = 3;
     private static final double SIMILARITY_THRESHOLD = 0.15;
     private static final int MIN_NUM_TERMS = 5;
+    public static final int QUERY_BIASED = -5;
+    public static final int GRAPH_SIMILARITY = 22;
 
     private ArrayList<Sentence> sentences = new ArrayList<>();
     private String headline;
@@ -18,7 +19,11 @@ public class SentenceSimilarity {
         }
     }
 
-    public String generateSummary() {
+    public String generateSummary(int summaryType) {
+        return generateSummary(summaryType, null);
+    }
+
+    public String generateSummary(int summaryType, ArrayList<String> query) {
         StringBuilder sb = new StringBuilder();
         sb.append(headline.trim()); // add the headline to the summary.
         sb.append("\n");
@@ -27,12 +32,19 @@ public class SentenceSimilarity {
         // System.out.println("sentences: " + sentences.size() + ", longSentences: " + longSentences.size());
 
         int numToInclude;
+        PriorityQueue<Sentence> topSentences = new PriorityQueue<>();
 
         if (longSentences.size() > SUMMARY_SENTENCE_COUNT + 1) {
             sentences = longSentences;
-            calculateSimilarity();
-            Collections.sort(sentences);
             numToInclude = SUMMARY_SENTENCE_COUNT;
+
+            if (summaryType == QUERY_BIASED && query != null) {
+                calculateQueryBiasedRanks(query);
+            } else if (summaryType == GRAPH_SIMILARITY) {
+                calculateSimilarity();
+            }
+            Collections.sort(sentences);
+
         } else {
             numToInclude = sentences.size(); // If there aren't enough sentences, include the entire text.
         }
@@ -45,9 +57,15 @@ public class SentenceSimilarity {
         return sb.toString().trim();
     }
 
+    private void calculateQueryBiasedRanks(ArrayList<String> query) {
+        for (Sentence sentence : sentences) {
+            sentence.setRank(sentence.queryBiasedRank(query));
+        }
+    }
+
     private ArrayList<Sentence> removeShortSentences(ArrayList<Sentence> sentences) {
         ArrayList<Sentence> longSentences = new ArrayList<>();
-        for(Sentence sentence : sentences) {
+        for (Sentence sentence : sentences) {
             if (sentence.getNumTerms() >= MIN_NUM_TERMS) {
                 longSentences.add(sentence);
             }
@@ -79,6 +97,6 @@ public class SentenceSimilarity {
         SentenceSimilarity sim = new SentenceSimilarity(sentences);
 
         System.out.println(sentences.toString());
-        System.out.println(sim.generateSummary());
+        System.out.println(sim.generateSummary(GRAPH_SIMILARITY));
     }
 }
