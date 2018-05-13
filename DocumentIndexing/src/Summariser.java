@@ -17,7 +17,7 @@ public class Summariser {
         file = new File(filename);
     }
 
-    public ArrayList<String> generateSummaries(ArrayList<String> docNumbers) {
+    public ArrayList<String> generateSummaries(ArrayList<String> docNumbers, int summaryType, ArrayList<String> query) {
         ArrayList<String> summaries = new ArrayList<>();
         for (String docNo :
                 docNumbers) {
@@ -28,7 +28,7 @@ public class Summariser {
                 System.out.println("Article " + docNo + " does not contain text. It may be an image.");
             } else {
                 SentenceSimilarity similar = new SentenceSimilarity(sentences);
-                String summary = similar.generateSummary();
+                String summary = similar.generateSummary(summaryType, query);
                 summaries.add(summary);
                 System.out.println(docNo + ": \n" + summary + "\n|");
             }
@@ -100,14 +100,22 @@ public class Summariser {
     public static void main(String[] args) {
         Summariser sum = new Summariser("latimes-100");
         ArrayList<String> docNos = new ArrayList<>();
-        for (int i=1; i<10; i++) {
-            docNos.add("LA010189-000" + i);
-        }
-        for (int i=10; i<100; i++) {
-            docNos.add("LA010189-00" + i);
-        }
+//        for (int i=1; i<10; i++) {
+//            docNos.add("LA010189-000" + i);
+//        }
+//        for (int i=10; i<100; i++) {
+//            docNos.add("LA010189-00" + i);
+//        }
+        docNos.add("LA010189-0002");
+
+        ArrayList<String> query = new ArrayList<>();
+        query.add("Tocqueville");
+        query.add("Andre");
+        query.add("Jardin");
+
+
 //        docNos.add("LA010189-00" + 19);
-        ArrayList<String> summaries = sum.generateSummaries(docNos);
+        ArrayList<String> summaries = sum.generateSummaries(docNos, SentenceSimilarity.QUERY_BIASED, query);
 //        for (String summary :
 //                summaries) {
 //            System.out.println(summary + "\n");
