@@ -6,23 +6,22 @@ import java.util.HashMap;
 class FileWriter {
 	private static final String MODE_READ_WRITE = "rw";
 	private final HashMap<String, IndexEntry> lexicon;
-	private final ArrayList<Article> articles;
-	private double avgDocLength;
+	private final ArrayList<Document> documents;
 
-	FileWriter(HashMap<String, IndexEntry> lexicon, ArrayList<Article> articles) {
+	FileWriter(HashMap<String, IndexEntry> lexicon, ArrayList<Document> documents) {
 		this.lexicon = lexicon;
-		this.articles = articles;
-		calculateAvgLength();
+		this.documents = documents;
 	}
 
 	void writeMapFile() {
 		try (RandomAccessFile mapFile = new RandomAccessFile("map", MODE_READ_WRITE)) {
-			mapFile.writeInt(Article.getArticleCount());
-			for(Article article : articles){
-				if(article!=null){
-					int docIndex = article.getDocumentIndex();
-					String docNo = article.getDocNo();
-					double kValue = calculateKValue(article);
+			Document.calculateAvgLength(documents);
+			mapFile.writeInt(Document.getNumberOfDocuments());
+			for(Document document : documents){
+				if(document!=null){
+					int docIndex = document.getDocumentIndex();
+					String docNo = document.getDocNo();
+					double kValue = document.calculateKValue();
 					mapFile.writeInt(docIndex);
 					mapFile.writeUTF(docNo);
 					mapFile.writeDouble(kValue);
@@ -58,26 +57,5 @@ class FileWriter {
 		} catch (IOException e) {
 			System.err.println("Problem with writing to invlists file!\n");
 		}
-	}
-
-	//Calculating Average Length
-	void calculateAvgLength(){
-		Integer totalDocLength=0;
-		for(Article article : articles){
-			if(article!=null)
-				totalDocLength += article.getDocumentLength();
-		}
-		this.avgDocLength = totalDocLength/Article.getArticleCount();
-	}
-
-	//Calculating K-value
-	double calculateKValue(Article article){
-		double K = 0.0;
-		double k1 = 1.2;
-		double b = 0.75;
-		Integer docLength = article.getDocumentLength();
-
-		K = k1 * ((1 - b) + ((b * docLength))/avgDocLength);
-		return K;
 	}
 }

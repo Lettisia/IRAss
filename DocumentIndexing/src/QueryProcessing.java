@@ -37,10 +37,7 @@ class QueryProcessing {
     private ArrayList<String> queryTerms = null;
 	private HashMap<Integer, Document> documentIDMap = null;	
 	private HashMap<String, IndexEntry> lexicon = null;
-	
 	private HashMap<Integer, Double> accumulativeScore = new HashMap<>();
-	
-	private int numberOfDocuments;
 
 	QueryProcessing(Integer queryLabel, String queryString, Integer numResults, 
 			int numberOfDocuments, HashMap<String, IndexEntry> lexicon, HashMap<Integer, Document> documentIDMap, 
@@ -48,7 +45,7 @@ class QueryProcessing {
 
 		this.queryLabel = queryLabel;
 		this.numResults = numResults;
-		this.numberOfDocuments = numberOfDocuments;
+		Document.setNumberOfDocuments(numberOfDocuments);
 		this.lexicon = lexicon;
 		this.documentIDMap = documentIDMap;
 		this.invlistFile = invlistFile;
@@ -81,7 +78,7 @@ class QueryProcessing {
 				long byteOffset = entry.getByteOffset();
 				HashMap<Integer, Integer> invlist = readInvistFile(docFrequency, byteOffset);
 				for(Integer key : invlist.keySet()){
-					double score = calcSimilarityScore(documentIDMap.get(key).getkValue(), invlist.get(key), docFrequency);
+					double score = Document.calcSimilarityScore(documentIDMap.get(key).getkValue(), invlist.get(key), docFrequency);
 					if(accumulativeScore.containsKey(key)){
 						score = accumulativeScore.get(key) + score;
 					}
@@ -119,13 +116,6 @@ class QueryProcessing {
 			System.err.println("Problem with reading from index file!");
 		}
 		return invlist;
-	}
-	
-	private double calcSimilarityScore(double kValue, int termFrequency, int documentFrequency){
-		double k1 = 1.2;
-		double wt = ((k1 + 1) * termFrequency) / (kValue + termFrequency);
-		double bm25 = wt * Math.log((numberOfDocuments - documentFrequency + 0.5) / (documentFrequency + 0.5));	
-		return bm25;
 	}
 	
 	private void rankingDocuments(){
