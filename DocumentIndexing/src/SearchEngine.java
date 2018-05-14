@@ -11,8 +11,6 @@ class SearchEngine {
     private final String lexiconFile;
     private final String mapFile;
     private String stoplistFile;
-    
-    private static int numOfDocuments;
 
     private final HashMap<String, IndexEntry> lexicon = new HashMap<>();
     private final HashMap<Integer, Document> documentIDMap = new HashMap<>();
@@ -33,28 +31,32 @@ class SearchEngine {
     
     public void search(Integer queryLabel,Integer numResults, String stoplist, String query) {
         this.stoplistFile = stoplist;
-    	queryProcessor = new QueryProcessing(queryLabel, query, numResults, 
-    										numOfDocuments, lexicon, documentIDMap, 
-    										invlistFile, stoplistFile);
+    	queryProcessor = new QueryProcessing(queryLabel, query, numResults, lexicon, documentIDMap, invlistFile, stoplistFile);
     	queryProcessor.displayResults();
     }
 
     private void readMapFile() {
         try (RandomAccessFile mapFileName = new RandomAccessFile(mapFile, READ_MODE)) {
             long endOfFile = mapFileName.length();
-            numOfDocuments = mapFileName.readInt();
+            
+    		Document.setAvgDocumentLength(mapFileName.readDouble());
+    		Document.setNumberOfDocuments(mapFileName.readInt());
+    		
             if (VERBOSE) {
-            	System.out.println("Number of Documents: " + numOfDocuments);
+            	System.out.println("Number of Documents: " + Document.getNumberOfDocuments());
+            	System.out.println("Average Document Length: " + Document.getAvgDocumentLength());
             }
             while (mapFileName.getFilePointer() <= endOfFile) {
                 int docIndex = mapFileName.readInt();
                 String docNo = mapFileName.readUTF();
-                double kValue = mapFileName.readDouble();
-                Document document = new Document(docIndex, docNo, kValue);
+                int documentLength = mapFileName.readInt();
+                Document document = new Document(docIndex, docNo, documentLength);
+                double kValue = document.calculateKValue();
                 documentIDMap.put(docIndex, document);
                 if (VERBOSE) {
                     System.out.print("DocIndex: " + docIndex);
                     System.out.print("||DocNo:" + docNo);
+                    System.out.print("||DocLength:" + documentLength);
                     System.out.print("||kValue:" + kValue);
                     System.out.println();
                 }

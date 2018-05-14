@@ -15,8 +15,7 @@ public class Document {
 	private double kValue;
 	
 	private static int numberOfDocuments = 0;
-
-	private static int avgDocumentLength = 0;
+	private static double avgDocumentLength = 0.0;
 	
 	Document(String docNo, String headline, String text) {
 		numberOfDocuments++;
@@ -33,10 +32,10 @@ public class Document {
 		this.text = headline + " " + text;
 	}
 	
-	Document(int docIndex, String docNo, Double kValue){
+	Document(int docIndex, String docNo, int documentLength){
 		this.documentIndex = docIndex;
 		this.docNo = docNo;
-		this.kValue = kValue;
+		this.documentLength = documentLength;
 	}
 
 	void parse(StopwordRemover stopwordRemover) {
@@ -93,19 +92,20 @@ public class Document {
 	}
 
 	//Calculating document length
-	public void calculateDocLength(){
+	public Integer getDocumentLength(){
 		for(String term : terms){
 			this.documentLength += term.length();
 		}
+		return this.documentLength;
 	}
 
 	//Calculating Average Length
-	public static void calculateAvgLength(ArrayList<Document> documents){
+	public static void getAvgDocLength(ArrayList<Document> documents){
 		Integer totalDocLength=0;
 		for(Document document : documents){
 			if(document!=null){
-				document.calculateDocLength();
-				totalDocLength += document.documentLength;
+				Integer docLen = document.getDocumentLength();
+				totalDocLength += docLen;
 			}
 		}
 		avgDocumentLength = totalDocLength/numberOfDocuments;
@@ -113,7 +113,7 @@ public class Document {
 
 	//Calculating K-value
 	public double calculateKValue(){
-		kValue = k1 * ((1 - b) + ((b * this.documentLength))/avgDocumentLength);
+		this.kValue = k1 * ((1 - b) + ((b * this.documentLength))/avgDocumentLength);
 		return kValue;
 	}
 	
@@ -132,8 +132,16 @@ public class Document {
 		return docNo;
 	}
 
+	public static void setAvgDocumentLength(double avgDocumentLength) {
+		Document.avgDocumentLength = avgDocumentLength;
+	}
+
 	private String getText() {
 		return text;
+	}
+
+	public static double getAvgDocumentLength() {
+		return avgDocumentLength;
 	}
 
 	Integer getDocumentIndex() {

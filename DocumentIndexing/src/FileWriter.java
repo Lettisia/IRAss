@@ -15,16 +15,17 @@ class FileWriter {
 
 	void writeMapFile() {
 		try (RandomAccessFile mapFile = new RandomAccessFile("map", MODE_READ_WRITE)) {
-			Document.calculateAvgLength(documents);
+			Document.getAvgDocLength(documents);
+			mapFile.writeDouble(Document.getAvgDocumentLength());
 			mapFile.writeInt(Document.getNumberOfDocuments());
 			for(Document document : documents){
 				if(document!=null){
 					int docIndex = document.getDocumentIndex();
 					String docNo = document.getDocNo();
-					double kValue = document.calculateKValue();
+					int documentLength = document.getDocumentLength();
 					mapFile.writeInt(docIndex);
 					mapFile.writeUTF(docNo);
-					mapFile.writeDouble(kValue);
+					mapFile.writeInt(documentLength);
 				}
 			}
 		} catch (IOException e) {

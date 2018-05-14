@@ -12,9 +12,7 @@
  * 			   Update value for new entry, using similarity metric
  * 		   ii) Else 
  * 			   Update value for existing accumulator Ad, using similarity metric
- * 3) For each accumulator Ad in H
- * 	  Set Ad = Ad/Wd
- * 4) For 1<d<=r
+ * 3) For 1<d<=r
  *    Select d such that Ad=max(Ad of entries in H)
  *    Retrieve d and present to the user
  *    Can sort the set of accumulators, Ad, and present the top r answers
@@ -39,13 +37,12 @@ class QueryProcessing {
 	private HashMap<String, IndexEntry> lexicon = null;
 	private HashMap<Integer, Double> accumulativeScore = new HashMap<>();
 
-	QueryProcessing(Integer queryLabel, String queryString, Integer numResults, 
-			int numberOfDocuments, HashMap<String, IndexEntry> lexicon, HashMap<Integer, Document> documentIDMap, 
+	QueryProcessing(Integer queryLabel, String queryString, Integer numResults,
+			HashMap<String, IndexEntry> lexicon, HashMap<Integer, Document> documentIDMap, 
 			String invlistFile, String stoplist) {
 
 		this.queryLabel = queryLabel;
 		this.numResults = numResults;
-		Document.setNumberOfDocuments(numberOfDocuments);
 		this.lexicon = lexicon;
 		this.documentIDMap = documentIDMap;
 		this.invlistFile = invlistFile;
@@ -54,7 +51,6 @@ class QueryProcessing {
 		}	
 		prcessingQueryString(queryString);
 		processingEachQueryTerm();
-		rankingDocuments();
 	}
 
 	private void prcessingQueryString(String queryString) {
@@ -87,6 +83,7 @@ class QueryProcessing {
 						System.out.print("Query Label: " + queryLabel);
 						System.out.print("|| DocNum:" + documentIDMap.get(key).getDocNo());
 						System.out.print("|| Rank:?");
+						System.out.print("|| kValue:" + documentIDMap.get(key).getkValue());
 						System.out.print("|| Score:" + accumulativeScore.get(key));
 						System.out.println();
 					}
@@ -118,16 +115,15 @@ class QueryProcessing {
 		return invlist;
 	}
 	
-	private void rankingDocuments(){
-		
-	}
-	
 	public void displayResults(){
+		TopNResults topNResults = new TopNResults(numResults, accumulativeScore);
+		HashMap<Integer, Integer> topResults = topNResults.getTopNResults();
 		System.out.println();
-		for(Integer key : accumulativeScore.keySet()){
+		for(Integer rank : topResults.keySet()){
+			Integer key = topResults.get(rank);
 			System.out.print(queryLabel + " ");
 			System.out.print(documentIDMap.get(key).getDocNo() + " ");
-			System.out.print("||Rank:?|| ");
+			System.out.print(rank + " ");
 			System.out.print(accumulativeScore.get(key) + " ");
 			System.out.println();
 		}
