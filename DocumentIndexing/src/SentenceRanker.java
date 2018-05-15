@@ -1,18 +1,17 @@
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.PriorityQueue;
 
-public class SentenceSimilarity {
+public class SentenceRanker {
     private static final int SUMMARY_SENTENCE_COUNT = 3;
-    private static final double SIMILARITY_THRESHOLD = 0.15;
     private static final int MIN_NUM_TERMS = 5;
     public static final int QUERY_BIASED = -5;
     public static final int GRAPH_SIMILARITY = 22;
+    private static final double SIMILARITY_THRESHOLD = 0.15;
 
     private ArrayList<Sentence> sentences = new ArrayList<>();
     private String headline;
 
-    public SentenceSimilarity(ArrayList<String> texts) {
+    public SentenceRanker(ArrayList<String> texts) {
         headline = texts.get(0);
         for (int i = 1; i < texts.size(); i++) {
             sentences.add(new Sentence(texts.get(i), i));
@@ -32,9 +31,10 @@ public class SentenceSimilarity {
         // System.out.println("sentences: " + sentences.size() + ", longSentences: " + longSentences.size());
 
         int numToInclude;
-        PriorityQueue<Sentence> topSentences = new PriorityQueue<>();
 
-        if (longSentences.size() > SUMMARY_SENTENCE_COUNT + 1) {
+        if (longSentences.size() < SUMMARY_SENTENCE_COUNT + 1) {
+            numToInclude = sentences.size(); // If there aren't enough sentences, include the entire text.
+        } else {
             sentences = longSentences;
             numToInclude = SUMMARY_SENTENCE_COUNT;
 
@@ -44,9 +44,6 @@ public class SentenceSimilarity {
                 calculateSimilarity();
             }
             Collections.sort(sentences);
-
-        } else {
-            numToInclude = sentences.size(); // If there aren't enough sentences, include the entire text.
         }
 
         for (int i = 0; i < numToInclude; i++) {
@@ -94,7 +91,7 @@ public class SentenceSimilarity {
         sentences.add("Yet another sentence.");
         sentences.add("Sentences are cool!");
 
-        SentenceSimilarity sim = new SentenceSimilarity(sentences);
+        SentenceRanker sim = new SentenceRanker(sentences);
 
         System.out.println(sentences.toString());
         System.out.println(sim.generateSummary(GRAPH_SIMILARITY));

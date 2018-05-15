@@ -27,8 +27,8 @@ public class Summariser {
                 summaries.add("Article " + docNo + " does not contain text. It may be an image.");
                 System.out.println("Article " + docNo + " does not contain text. It may be an image.");
             } else {
-                SentenceSimilarity similar = new SentenceSimilarity(sentences);
-                String summary = similar.generateSummary(summaryType, query);
+                SentenceRanker ranker = new SentenceRanker(sentences);
+                String summary = ranker.generateSummary(summaryType, query);
                 summaries.add(summary);
                 System.out.println(docNo + ": \n" + summary + "\n|");
             }
@@ -55,16 +55,17 @@ public class Summariser {
     }
 
     private ArrayList<String> makeSentences(String document) {
-        ArrayList<String> sentences = new ArrayList<>();
-
-        String headline = getText(document, HEADLINE_TAG_REGEX);
-        sentences.add(headline);
-
-        String text = getText(document, TEXT_TAG_REGEX);
-
+        String headline = extractText(document, HEADLINE_TAG_REGEX);
+        String text = extractText(document, TEXT_TAG_REGEX);
         if (headline.equals("") && text.equals("")) {
             return null;
         }
+        return tokeniseSentences(headline, text);
+    }
+
+    private ArrayList<String> tokeniseSentences(String headline, String text) {
+        ArrayList<String> sentences = new ArrayList<>();
+        sentences.add(headline);
 
         BreakIterator boundary = BreakIterator.getSentenceInstance();
         boundary.setText(text);
@@ -80,11 +81,10 @@ public class Summariser {
         } else {
             sentences.add(text);
         }
-
         return sentences;
     }
 
-    private String getText(String document, Pattern regex) {
+    private String extractText(String document, Pattern regex) {
         String headline = "";
         Matcher matcher = regex.matcher(document);
         if (matcher.find()) {
@@ -115,7 +115,7 @@ public class Summariser {
 
 
 //        docNos.add("LA010189-00" + 19);
-        ArrayList<String> summaries = sum.generateSummaries(docNos, SentenceSimilarity.QUERY_BIASED, query);
+        ArrayList<String> summaries = sum.generateSummaries(docNos, SentenceRanker.QUERY_BIASED, query);
 //        for (String summary :
 //                summaries) {
 //            System.out.println(summary + "\n");
