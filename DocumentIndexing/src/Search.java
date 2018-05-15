@@ -12,6 +12,7 @@ class Search {
         String invlistFile = "";
         String mapFile = "";
         int summaryType = 0;
+        boolean both = false;
         String collectionFile = "";
         SearchEngine searchEngine = null;
         Summariser summariser = null;
@@ -43,7 +44,7 @@ class Search {
                             mapFile = args[i];
                             break;
                         default:
-                            System.err.println("Search -BM25 -q <query-label> -n <num-results>  -l <lexicon> -i <invlists> -m <map> [-s <stoplist>] [-gb <collectionfile>] [-qb <collectionfile] <queryterm-1> [<queryterm-2> ...<queryterm-N>]");
+                            System.err.println("Search -BM25 -q <query-label> -n <num-results>  -l <lexicon> -i <invlists> -m <map> [-s <stoplist>] [-gb <collectionfile>] [-qb <collectionfile>] [-both <collectionfile>] <queryterm-1> [<queryterm-2> ...<queryterm-N>]");
                             break;
                     }
                 }
@@ -68,12 +69,24 @@ class Search {
                             collectionFile = args[i];
                             summariser = new Summariser(collectionFile, summaryType);
                             break;
+                        case "-both":
+                            both = true;
+                            summaryType = SentenceRanker.GRAPH_SIMILARITY;
+                            i++;
+                            collectionFile = args[i];
+                            summariser = new Summariser(collectionFile, summaryType);
+                            break;
                         default:
                             query += args[i] + " ";
                             break;
                     }
                 }
                 searchEngine.search(Integer.parseInt(queryLabel), Integer.parseInt(numResults), stopFile, query, summariser);
+                if (both) {
+                    // do it all again with other summary type
+                    summariser = new Summariser(collectionFile, SentenceRanker.QUERY_BIASED);
+                    searchEngine.search(Integer.parseInt(queryLabel), Integer.parseInt(numResults), stopFile, query, summariser);
+                }
                 long endTime = System.nanoTime();
                 double duration = (endTime - startTime) * 0.000001 / 60.0;
                 System.out.println("Running time: " + duration + " ms");
