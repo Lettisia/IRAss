@@ -6,7 +6,7 @@ import java.util.HashMap;
 class SearchEngine {
     private static final String READ_MODE = "r";
     private static final boolean VERBOSE = false;
-    
+
     private final String invlistFile;
     private final String lexiconFile;
     private final String mapFile;
@@ -14,7 +14,7 @@ class SearchEngine {
 
     private final HashMap<String, IndexEntry> lexicon = new HashMap<>();
     private final HashMap<Integer, Document> documentIDMap = new HashMap<>();
-    
+
     QueryProcessing queryProcessor = null;
 
     SearchEngine(String lexiconFile, String invlistFile, String mapFile) {
@@ -23,28 +23,28 @@ class SearchEngine {
         this.lexiconFile = lexiconFile;
         loadDataFromFile();
     }
-    
-    private void loadDataFromFile(){
+
+    private void loadDataFromFile() {
         readMapFile();
         readLexiconFile();
     }
-    
-    public void search(Integer queryLabel,Integer numResults, String stoplist, String query) {
+
+    public void search(Integer queryLabel, Integer numResults, String stoplist, String query, Summariser summariser) {
         this.stoplistFile = stoplist;
-    	queryProcessor = new QueryProcessing(queryLabel, query, numResults, lexicon, documentIDMap, invlistFile, stoplistFile);
-    	queryProcessor.displayResults();
+        queryProcessor = new QueryProcessing(queryLabel, query, numResults, lexicon, documentIDMap, invlistFile, stoplistFile);
+        queryProcessor.displayResults(summariser);
     }
 
     private void readMapFile() {
         try (RandomAccessFile mapFileName = new RandomAccessFile(mapFile, READ_MODE)) {
             long endOfFile = mapFileName.length();
-            
-    		Document.setAvgDocumentLength(mapFileName.readDouble());
-    		Document.setNumberOfDocuments(mapFileName.readInt());
-    		
+
+            Document.setAvgDocumentLength(mapFileName.readDouble());
+            Document.setNumberOfDocuments(mapFileName.readInt());
+
             if (VERBOSE) {
-            	System.out.println("Number of Documents: " + Document.getNumberOfDocuments());
-            	System.out.println("Average Document Length: " + Document.getAvgDocumentLength());
+                System.out.println("Number of Documents: " + Document.getNumberOfDocuments());
+                System.out.println("Average Document Length: " + Document.getAvgDocumentLength());
             }
             while (mapFileName.getFilePointer() <= endOfFile) {
                 int docIndex = mapFileName.readInt();
@@ -61,9 +61,9 @@ class SearchEngine {
                     System.out.println();
                 }
             }
-        }catch (EOFException e) {
+        } catch (EOFException e) {
             System.err.println("You read the map file!");
-        }catch (IOException e) {
+        } catch (IOException e) {
             System.err.println("Oops! Problem with reading from map file!");
         }
     }
@@ -93,9 +93,9 @@ class SearchEngine {
 
                 lexicon.put(term, entry);
             }
-        }catch (EOFException e) {
+        } catch (EOFException e) {
             System.err.println("You read the lexicon file!");
-        }catch (IOException e) {
+        } catch (IOException e) {
             System.err.println("Problem with reading from lexicon file!");
         }
     }

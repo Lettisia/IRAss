@@ -95,7 +95,6 @@ class InvertedIndexGenerator {
     }
 
     private Document loadOneDocument(String document) {
-
     	Document oneDocument = null;
         String docNo;
         String headline;

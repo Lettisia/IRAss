@@ -8,32 +8,38 @@ import java.util.regex.Pattern;
 
 public class Summariser {
     private File file;
+    private int summaryType;
     private static final Pattern HEADLINE_TAG_REGEX = Pattern.compile("<HEADLINE>(.+?)</HEADLINE>");
     private static final Pattern TEXT_TAG_REGEX = Pattern.compile("<TEXT>(.+?)</TEXT>");
     private static final Pattern PARAGRAPH_REGEX = Pattern.compile("<P>|</P>");
     private static final String DOC_END_TAG = "</DOC>";
 
-    public Summariser(String filename) {
+    public Summariser(String filename, int summaryType) {
         file = new File(filename);
+        this.summaryType = summaryType;
+
     }
 
-    public ArrayList<String> generateSummaries(ArrayList<String> docNumbers, int summaryType, ArrayList<String> query) {
+    public ArrayList<String> generateSummaries(ArrayList<String> docNumbers, ArrayList<String> query) {
         ArrayList<String> summaries = new ArrayList<>();
-        for (String docNo :
-                docNumbers) {
-            String document = readDocument(docNo);
-            ArrayList<String> sentences = makeSentences(document);
-            if (sentences == null) {
-                summaries.add("Article " + docNo + " does not contain text. It may be an image.");
-                System.out.println("Article " + docNo + " does not contain text. It may be an image.");
-            } else {
-                SentenceRanker ranker = new SentenceRanker(sentences);
-                String summary = ranker.generateSummary(summaryType, query);
-                summaries.add(summary);
-                System.out.println(docNo + ": \n" + summary + "\n|");
-            }
+        for (String docNo : docNumbers) {
+            summaries.add(generateSummary(query, docNo));
         }
         return summaries;
+    }
+
+    public String generateSummary(ArrayList<String> query, String docNo) {
+        String document = readDocument(docNo);
+        ArrayList<String> sentences = makeSentences(document);
+        if (sentences == null) {
+            //System.out.println("Article " + docNo + " does not contain text. It may be an image.");
+            return "Article " + docNo + " does not contain text. It may be an image.";
+        } else {
+            SentenceRanker ranker = new SentenceRanker(sentences);
+            String summary = ranker.generateSummary(summaryType, query);
+            //System.out.println(docNo + ": \n" + summary + "\n|");
+            return summary;
+        }
     }
 
     private String readDocument(String docNo) {
@@ -98,7 +104,7 @@ public class Summariser {
     }
 
     public static void main(String[] args) {
-        Summariser sum = new Summariser("latimes-100");
+        Summariser sum = new Summariser("latimes-100", SentenceRanker.QUERY_BIASED);
         ArrayList<String> docNos = new ArrayList<>();
 //        for (int i=1; i<10; i++) {
 //            docNos.add("LA010189-000" + i);
@@ -115,7 +121,7 @@ public class Summariser {
 
 
 //        docNos.add("LA010189-00" + 19);
-        ArrayList<String> summaries = sum.generateSummaries(docNos, SentenceRanker.QUERY_BIASED, query);
+        ArrayList<String> summaries = sum.generateSummaries(docNos, query);
 //        for (String summary :
 //                summaries) {
 //            System.out.println(summary + "\n");
