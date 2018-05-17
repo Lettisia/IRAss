@@ -31,7 +31,7 @@ Have a Java Runtime environment installed on your computer.
 - For example use ```java Search lexicon invlists map nuclear``` to search for all documents containing the term "nuclear".
 - use ```java Search lexicon invlists map -s /home/inforet/a1/stoplist where is paris``` to search for "paris" but not "where" or "is".
 - Updated search command 
-```java Search -BM25 -q <query-label> -n <num-results> -l <lexicon> -i <invlists> -m <map> [-s <stoplist>] <queryterm-1> [<queryterm-2> ...<queryterm-N>]```
+```java Search -BM25 -q <query-label> -n <num-results>  -l <lexicon> -i <invlists> -m <map> [-s <stoplist>] [-gb <collectionfile>] [-qb <collectionfile>] [-both <collectionfile>] <queryterm-1> [<queryterm-2> ...<queryterm-N>]```
 
 ## Built With
 
