@@ -74,6 +74,7 @@ class Search {
                             summaryType = SentenceRanker.GRAPH_SIMILARITY;
                             i++;
                             collectionFile = args[i];
+                            System.out.println("Graph Similarity Summary");
                             summariser = new Summariser(collectionFile, summaryType);
                             break;
                         default:
@@ -84,6 +85,7 @@ class Search {
                 searchEngine.search(Integer.parseInt(queryLabel), Integer.parseInt(numResults), stopFile, query, summariser);
                 if (both) {
                     // do it all again with other summary type
+                    System.out.println("Query-biased Summary");
                     summariser = new Summariser(collectionFile, SentenceRanker.QUERY_BIASED);
                     searchEngine.search(Integer.parseInt(queryLabel), Integer.parseInt(numResults), stopFile, query, summariser);
                 }
