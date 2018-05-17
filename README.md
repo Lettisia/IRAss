@@ -30,7 +30,8 @@ Have a Java Runtime environment installed on your computer.
   - ```<queryterm 1> [... <queryterm N>]``` are any number of query terms which will be searched for separately.
 - For example use ```java Search lexicon invlists map nuclear``` to search for all documents containing the term "nuclear".
 - use ```java Search lexicon invlists map -s /home/inforet/a1/stoplist where is paris``` to search for "paris" but not "where" or "is".
-- Updated search command ```java Search -BM25 -q 401 -n 101 -l lexicon -i invlists -m map -s /home/inforet/a1/stoplist  ancient city ruins```
+- Updated search command 
+```java Search -BM25 -q <query-label> -n <num-results> -l <lexicon> -i <invlists> -m <map> [-s <stoplist>] <queryterm-1> [<queryterm-2> ...<queryterm-N>]```
 
 ## Built With
 
