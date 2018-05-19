@@ -16,10 +16,9 @@ class InvertedIndexGenerator {
 
     private Scanner scanner = null;
     private final HashMap<String, IndexEntry> lexicon = new HashMap<>();
-    private final HashMap<Integer, String> documentIDMap = new HashMap<>();
     private boolean printTerms = false;
     private StopwordRemover stopwordRemover = null;
-    private static ArrayList<Document> documents =  new ArrayList<>();
+
 
     InvertedIndexGenerator(String source, boolean printTerms, String stopFile) throws IOException {
         scanner = new Scanner(new FileInputStream(source));
@@ -34,12 +33,13 @@ class InvertedIndexGenerator {
     }
 
     void createInvertedIndex() {
+        ArrayList<Document> documents = new ArrayList<>();
         while (scanner.hasNext()) {
             String document = readOneDocFromFile();
             Document oneDocument = loadOneDocument(document);
-            
+
             if (oneDocument != null) {
-            	oneDocument.parse(stopwordRemover);
+                oneDocument.parse(stopwordRemover);
                 if (hasTerms(oneDocument)) {
                     printTerms(oneDocument);
                     addToLexicon(oneDocument);
@@ -95,7 +95,7 @@ class InvertedIndexGenerator {
     }
 
     private Document loadOneDocument(String document) {
-    	Document oneDocument = null;
+        Document oneDocument = null;
         String docNo;
         String headline;
         String text;
@@ -108,8 +108,7 @@ class InvertedIndexGenerator {
             if (text == null && headline == null) {
                 return null;
             } else {
-            	oneDocument = new Document(docNo, headline, text);
-                documentIDMap.put(oneDocument.getDocumentIndex(), docNo);
+                oneDocument = new Document(docNo, headline, text);
             }
         }
         return oneDocument;

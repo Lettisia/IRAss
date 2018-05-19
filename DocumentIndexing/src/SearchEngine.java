@@ -10,12 +10,9 @@ class SearchEngine {
     private final String invlistFile;
     private final String lexiconFile;
     private final String mapFile;
-    private String stoplistFile;
 
     private final HashMap<String, IndexEntry> lexicon = new HashMap<>();
     private final HashMap<Integer, Document> documentIDMap = new HashMap<>();
-
-    QueryProcessing queryProcessor = null;
 
     SearchEngine(String lexiconFile, String invlistFile, String mapFile) {
         this.mapFile = mapFile;
@@ -30,8 +27,7 @@ class SearchEngine {
     }
 
     public void search(Integer queryLabel, Integer numResults, String stoplist, String query, Summariser summariser) {
-        this.stoplistFile = stoplist;
-        queryProcessor = new QueryProcessing(queryLabel, query, numResults, lexicon, documentIDMap, invlistFile, stoplistFile);
+        QueryProcessing queryProcessor = new QueryProcessing(queryLabel, query, numResults, lexicon, documentIDMap, invlistFile, stoplist);
         queryProcessor.displayResults(summariser);
     }
 

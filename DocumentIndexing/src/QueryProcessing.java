@@ -16,7 +16,7 @@
  * Select d such that Ad=max(Ad of entries in H)
  * Retrieve d and present to the user
  * Can sort the set of accumulators, Ad, and present the top r answers
- */
+ **/
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -34,9 +34,9 @@ class QueryProcessing {
 
     private StopwordRemover stopwordRemover = null;
     private ArrayList<String> queryTerms = null;
-    private HashMap<Integer, Document> documentIDMap = null;
-    private HashMap<String, IndexEntry> lexicon = null;
-    private HashMap<Integer, Double> accumulativeScore = new HashMap<>();
+    private final HashMap<Integer, Document> documentIDMap;
+    private final HashMap<String, IndexEntry> lexicon;
+    private final HashMap<Integer, Double> accumulativeScore = new HashMap<>();
 
     QueryProcessing(Integer queryLabel, String queryString, Integer numResults,
                     HashMap<String, IndexEntry> lexicon, HashMap<Integer, Document> documentIDMap,
@@ -47,7 +47,7 @@ class QueryProcessing {
         this.lexicon = lexicon;
         this.documentIDMap = documentIDMap;
         this.invlistFile = invlistFile;
-        if (!stoplist.trim().equals("") && stoplist != null) {
+        if (stoplist != null && !stoplist.trim().equals("")) {
             stopwordRemover = new StopwordRemover(stoplist);
         }
         processingQueryString(queryString);
@@ -67,7 +67,7 @@ class QueryProcessing {
         }
     }
 
-    void processingEachQueryTerm() {
+    private void processingEachQueryTerm() {
         for (String term : queryTerms) {
             if (!term.equals("") && lexicon.containsKey(term)) {
                 IndexEntry entry = lexicon.get(term);
@@ -116,7 +116,7 @@ class QueryProcessing {
         return invlist;
     }
 
-    public void displayResults(Summariser summariser) {
+    void displayResults(Summariser summariser) {
         TopNResults topNResults = new TopNResults(numResults, accumulativeScore);
         HashMap<Integer, Integer> topResults = topNResults.getTopNResults();
         System.out.println();
@@ -132,7 +132,6 @@ class QueryProcessing {
                 System.out.println(summariser.generateSummary(queryTerms, documentIDMap.get(key).getDocNo()));
                 System.out.println();
             }
-
         }
         System.out.println();
     }

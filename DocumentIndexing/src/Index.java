@@ -46,8 +46,8 @@ class Index {
             generator.createInvertedIndex();
             long endTime = System.nanoTime();
             double duration = (endTime - startTime) * 0.000001 / 60.0;
-			System.out.println("Running time: " + duration + " ms");
-			Toolkit.getDefaultToolkit().beep();
+            System.out.println("Running time: " + duration + " ms");
+            Toolkit.getDefaultToolkit().beep();
         } catch (IOException e) {
             System.err.println("Error: Please check that you have provided a document collection file.");
         }

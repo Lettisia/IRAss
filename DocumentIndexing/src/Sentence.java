@@ -1,24 +1,21 @@
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.regex.Pattern;
 
 import static java.lang.Math.sqrt;
 
-public class Sentence implements Comparable<Sentence> {
-    private String fullText;
-    private HashMap<String, Integer> termFrequency;
-    private int id;
+class Sentence implements Comparable<Sentence> {
+    private final String fullText;
+    private final HashMap<String, Integer> termFrequency;
     private double norm = -1;
-    private ArrayList<Sentence> similarSentences = new ArrayList<>();
+    private final ArrayList<Sentence> similarSentences = new ArrayList<>();
     private static final Pattern FILTER_REGEX = Pattern.compile("[\\p{Punct}]");
     private double rank = 0.0;
 
-    public Sentence(String fullText, int id) {
+    Sentence(String fullText) {
         this.fullText = fullText;
         this.termFrequency = calculateTermFrequency(fullText);
-        this.id = id;
     }
 
     private HashMap<String, Integer> calculateTermFrequency(String fullText) {
@@ -51,12 +48,12 @@ public class Sentence implements Comparable<Sentence> {
         return FILTER_REGEX.matcher(text).replaceAll(" ");
     }
 
-    public void addSimilarSentence(Sentence newSentence) {
+    void addSimilarSentence(Sentence newSentence) {
         similarSentences.add(newSentence);
         rank = similarSentences.size();
     }
 
-    public double getNorm() {
+    private double getNorm() {
         if (norm > 0) {
             return norm;
         } else {
@@ -69,7 +66,7 @@ public class Sentence implements Comparable<Sentence> {
         }
     }
 
-    public double dot(Sentence other) {
+    private double dot(Sentence other) {
         double result = 0.0;
         for (String term : termFrequency.keySet()) {
             Integer otherValue = other.getTermFrequency().get(term);
@@ -80,11 +77,11 @@ public class Sentence implements Comparable<Sentence> {
         return result;
     }
 
-    public double cosineSimilarity(Sentence other) {
+    double cosineSimilarity(Sentence other) {
         return this.dot(other) / (this.getNorm() * other.getNorm());
     }
 
-    public double queryBiasedRank(ArrayList<String> queryTerms) {
+    double queryBiasedRank(ArrayList<String> queryTerms) {
         double count = 0.0;
         for (String term :
                 queryTerms) {
@@ -96,11 +93,7 @@ public class Sentence implements Comparable<Sentence> {
         return rank;
     }
 
-    public int getSizeSimilarSentences() {
-        return similarSentences.size();
-    }
-
-    public double getRank() {
+    private double getRank() {
         return rank;
     }
 
@@ -112,29 +105,15 @@ public class Sentence implements Comparable<Sentence> {
         return termFrequency.size();
     }
 
-    public String getFullText() {
+    String getFullText() {
         return fullText;
     }
 
-    public void setFullText(String fullText) {
-        this.fullText = fullText;
-    }
 
-    public HashMap<String, Integer> getTermFrequency() {
+    private HashMap<String, Integer> getTermFrequency() {
         return termFrequency;
     }
 
-    public void setTermFrequency(HashMap<String, Integer> termFrequency) {
-        this.termFrequency = termFrequency;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     @Override
     public int compareTo(Sentence o) {

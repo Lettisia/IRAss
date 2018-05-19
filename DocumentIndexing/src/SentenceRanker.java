@@ -1,28 +1,28 @@
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class SentenceRanker {
+class SentenceRanker {
     private static final int SUMMARY_SENTENCE_COUNT = 3;
     private static final int MIN_NUM_TERMS = 5;
-    public static final int QUERY_BIASED = -5;
-    public static final int GRAPH_SIMILARITY = 22;
+    static final int QUERY_BIASED = -5;
+    static final int GRAPH_SIMILARITY = 22;
     private static final double SIMILARITY_THRESHOLD = 0.15;
 
     private ArrayList<Sentence> sentences = new ArrayList<>();
-    private String headline;
+    private final String headline;
 
-    public SentenceRanker(ArrayList<String> texts) {
+    SentenceRanker(ArrayList<String> texts) {
         headline = texts.get(0);
         for (int i = 1; i < texts.size(); i++) {
-            sentences.add(new Sentence(texts.get(i), i));
+            sentences.add(new Sentence(texts.get(i)));
         }
     }
 
-    public String generateSummary(int summaryType) {
-        return generateSummary(summaryType, null);
+    private String generateSummary() {
+        return generateSummary(SentenceRanker.GRAPH_SIMILARITY, null);
     }
 
-    public String generateSummary(int summaryType, ArrayList<String> query) {
+    String generateSummary(int summaryType, ArrayList<String> query) {
         StringBuilder sb = new StringBuilder();
         sb.append(headline.trim()); // add the headline to the summary.
         sb.append("\n");
@@ -94,6 +94,6 @@ public class SentenceRanker {
         SentenceRanker sim = new SentenceRanker(sentences);
 
         System.out.println(sentences.toString());
-        System.out.println(sim.generateSummary(GRAPH_SIMILARITY));
+        System.out.println(sim.generateSummary());
     }
 }
