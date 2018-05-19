@@ -1,6 +1,6 @@
-# Information Retrieval
+# Information Ranked Retrieval
 
-To implement an inverted index and use it to store term occurrence information. This project reads data from disk, filters it using some predefined rules, tokenizes the data, removes stopwords from a predefine list of words, writes the processed data into appropriate files on disk and finally able to retrive data from disk. 
+To implement a ranked querying system, run a set of sample queries, evaluate system performance, and design and implement appropriate data structures for efficient searching. This search system will produce short document summaries with each answer item returned in a search results list. Two summary creation approaches - graph based and query based summarisation.
 
 ## Contributors
 
