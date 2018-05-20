@@ -32,6 +32,7 @@ Have a Java Runtime environment installed on your computer.
   - ```-s``` is also an optional parameter that, with a valid ```<stoplist>``` file as the next argument in the list, will remove the terms that are listed in the ```<stoplist>``` from the query.
   - ```-gb``` is an optional parameter that, with a valid ```latimes``` file as the next argument in the list, will do a graph based summarisation.
   - ```-qb``` is an optional parameter that, with a valid ```latimes``` file as the next argument in the list, will do a query based summarisation.
+  - *NOTE: Run either -gb or -qb to produce a short document summary.*
   - ```<queryterm 1> [... <queryterm N>]``` are any number of query terms which will be searched for separately.
 - For example use ```java Search -BM25 -q 401 -n 1 -l lexicon -i invlists -m map -s /home/inforet/a1/stoplist -gb /home/inforet/a1/latimes ancient city ruins``` to perform a ranked retrieval for all documents containing "ancient city ruins" and do a graph based document summarisation using of the highest ranked document.
 - use ```java Search -BM25 -q 401 -n 100 -l lexicon -i invlists -m map -s /home/inforet/a1/stoplist ancient city ruins``` to perform a ranked retrieval for all documents containing "ancient city ruins"
